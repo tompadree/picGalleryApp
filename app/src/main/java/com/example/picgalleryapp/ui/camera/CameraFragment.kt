@@ -1,11 +1,5 @@
 package com.example.picgalleryapp.ui.camera
 
-
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.picgalleryapp.R
 import com.example.picgalleryapp.databinding.FragmentCameraBinding
@@ -46,7 +40,7 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
             cameraFragmentCamera.destroy()
     }
 
-    fun setupObservers(){
+    private fun setupObservers(){
 
         viewModel.takePhoto.observe(this){
             cameraFragmentCamera.takePicture()
