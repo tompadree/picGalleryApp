@@ -4,13 +4,13 @@ package com.example.picgalleryapp.ui.gallery
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
 
 import com.example.picgalleryapp.R
 import com.example.picgalleryapp.databinding.FragmentGalleryBinding
 import com.example.picgalleryapp.ui.BindingFragment
 import com.example.picgalleryapp.ui.PicGalleryActivity
 import kotlinx.android.synthetic.main.fragment_gallery.*
-
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -74,7 +74,8 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
     }
 
     private fun openCamera(){
-
+        val nc = NavHostFragment.findNavController(this)
+        nc.navigate(GalleryFragmentDirections.actionGalleryFragmentToCameraFragment())
     }
 
 

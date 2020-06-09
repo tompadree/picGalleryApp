@@ -6,20 +6,51 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.picgalleryapp.R
+import com.example.picgalleryapp.databinding.FragmentCameraBinding
+import com.example.picgalleryapp.ui.BindingFragment
+import kotlinx.android.synthetic.main.fragment_camera.*
 
-/**
- * A simple [Fragment] subclass.
- */
-class CameraFragment : Fragment() {
+class CameraFragment : BindingFragment<FragmentCameraBinding>() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_camera, container, false)
+    override val layoutId = R.layout.fragment_camera
+
+    private val viewModel: CameraViewModel by viewModel()
+
+    override fun onViewCreated() {
+        super.onViewCreated()
+
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
+        setupObservers()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(cameraFragmentCamera != null)
+            cameraFragmentCamera.open()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if(cameraFragmentCamera != null)
+            cameraFragmentCamera.close()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(cameraFragmentCamera != null)
+            cameraFragmentCamera.destroy()
+    }
+
+    fun setupObservers(){
+
+        viewModel.takePhoto.observe(this){
+            cameraFragmentCamera.takePicture()
+        }
     }
 
 
