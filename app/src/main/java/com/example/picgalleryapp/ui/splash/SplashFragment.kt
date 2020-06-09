@@ -36,6 +36,4 @@ class SplashFragment : Fragment() {
         val nc = NavHostFragment.findNavController(this)
         nc.navigate(SplashFragmentDirections.actionSplashFragmentToGalleryFragment())
     }
-
-
 }

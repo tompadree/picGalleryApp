@@ -1,14 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.gallery.GalleryFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+
+        <import type="android.view.View" />
+        <import type="androidx.core.content.ContextCompat" />
+
+        <variable
+            name="viewModel"
+            type="com.example.picgalleryapp.ui.gallery.GalleryViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Gallery" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+<!--        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+<!--            android:id="@+id/galleryFragSwipeLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            app:onRefreshListener="@{() -> viewModel.refresh(true)}"-->
+<!--            app:refreshing="@{viewModel.dataLoading}">-->
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/galleryFragToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/AppThemeNoActionBarToolbar"
+                    app:title="@string/app_name" />
+
+                <ProgressBar
+                    android:id="@+id/galleryFragProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:theme="@style/BlackAcccent"
+                    android:visibility="invisible" />
+
+<!--                <com.facebook.shimmer.ShimmerFrameLayout-->
+<!--                    android:id="@+id/shimmerViewContainer"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@+id/galleryFragToolbar"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:orientation="vertical"-->
+<!--                    shimmer:duration="300">-->
+<!--                    &lt;!&ndash;                android:visibility="@{viewModel.empty ? View.VISIBLE : View.GONE}">&ndash;&gt;-->
+
+<!--                    &lt;!&ndash; Adding 7 rows of placeholders &ndash;&gt;-->
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="vertical">-->
+
+<!--                        <include layout="@layout/item_placeholder" />-->
+
+<!--                        <include layout="@layout/item_placeholder" />-->
+
+<!--                        <include layout="@layout/item_placeholder" />-->
+
+<!--                        <include layout="@layout/item_placeholder" />-->
+
+<!--                        <include layout="@layout/item_placeholder" />-->
+
+<!--                        <include layout="@layout/item_placeholder" />-->
+
+<!--                        <include layout="@layout/item_placeholder" />-->
+
+<!--                        <include layout="@layout/item_placeholder" />-->
+
+<!--                        <include layout="@layout/item_placeholder" />-->
+
+<!--                        <include layout="@layout/item_placeholder" />-->
+<!--                    </LinearLayout>-->
+
+<!--                </com.facebook.shimmer.ShimmerFrameLayout>-->
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/galleryFragRv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/galleryFragToolbar" />
+
+            </RelativeLayout>
+
+<!--        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
