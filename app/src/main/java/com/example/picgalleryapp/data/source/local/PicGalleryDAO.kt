@@ -1,5 +1,6 @@
 package com.example.picgalleryapp.data.source.local
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -13,6 +14,14 @@ import com.example.picgalleryapp.data.models.ImageUri
 interface PicGalleryDAO {
 
     /**
+     * Observes list of uris.
+     *
+     * @return all uris.
+     */
+    @Query("SELECT * FROM uris LIMIT :page , :per_page")
+    fun observeUris(page: Int, per_page: Int): LiveData<List<ImageUri>>
+
+    /**
      * Delete all repos.
      */
     @Query("DELETE FROM uris")
@@ -23,5 +32,11 @@ interface PicGalleryDAO {
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun savePic(picture: ImageUri)
+
+    /**
+     * Save image uri.
+     */
+    @Query("SELECT * FROM uris")
+    fun fetchUris() : List<ImageUri>
 
 }

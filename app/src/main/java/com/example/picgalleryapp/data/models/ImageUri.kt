@@ -3,6 +3,7 @@ package com.example.picgalleryapp.data.models
 import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 /**
  * @author Tomislav Curis
@@ -13,4 +14,4 @@ data class ImageUri (
     @NonNull
     @PrimaryKey
     var uri : String
-)
+) : Serializable

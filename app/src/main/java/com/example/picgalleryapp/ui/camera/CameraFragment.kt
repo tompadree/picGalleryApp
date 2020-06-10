@@ -12,6 +12,12 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
 
     private val viewModel: CameraViewModel by viewModel()
 
+    override fun onCreate() {
+        super.onCreate()
+        if(cameraFragmentCamera != null)
+            cameraFragmentCamera.open()
+    }
+
     override fun onViewCreated() {
         super.onViewCreated()
 
@@ -19,13 +25,11 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         setupObservers()
-
     }
 
     override fun onResume() {
         super.onResume()
-        if(cameraFragmentCamera != null)
-            cameraFragmentCamera.open()
+
     }
 
     override fun onPause() {
@@ -45,7 +49,9 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
         viewModel.takePhoto.observe(this){
             cameraFragmentCamera.takePicture()
         }
+
+        viewModel.photoSaved.observe(this) {
+            activity?.onBackPressed()
+        }
     }
-
-
 }

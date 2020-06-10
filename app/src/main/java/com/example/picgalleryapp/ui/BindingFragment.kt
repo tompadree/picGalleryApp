@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 /**
  * @author Tomislav Curis
  */
-abstract class BindingFragment<T : ViewDataBinding> : Fragment() { //SupportNavigationFragment() {
+abstract class BindingFragment<T : ViewDataBinding> : BaseFragment() { //SupportNavigationFragment() {
 
     protected lateinit var binding: T
     protected abstract val layoutId: Int

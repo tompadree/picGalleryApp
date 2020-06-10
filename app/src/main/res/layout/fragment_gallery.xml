@@ -87,7 +87,10 @@
                     android:id="@+id/galleryFragRv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/galleryFragToolbar" />
+                    android:background="@color/separator_grey"
+                    android:layout_below="@+id/galleryFragToolbar"
+                    app:items="@{viewModel.items}"
+                    android:paddingBottom="10dp"/>
 
             </RelativeLayout>
 
