@@ -16,4 +16,6 @@
     // Gallery
     <string name="take_photo">Take photo</string>
     <string name="pick_image">Pick image</string>
+    <string name="delete_images">Delete images</string>
+
 </resources>

@@ -33,7 +33,7 @@ val DataModule = module {
     single { PicGalleryRepositoryImpl(get()) as PicGalleryRepository }
 
 
-    viewModel { GalleryViewModel(get()) }
+    viewModel { GalleryViewModel(get(), get(), get()) }
     viewModel { CameraViewModel(get(), get()) }
 
 }

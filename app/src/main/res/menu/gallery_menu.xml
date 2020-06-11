@@ -9,4 +9,8 @@
         android:id="@+id/menuPickImage"
         android:title="@string/pick_image"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/menuDeleteImages"
+        android:title="@string/delete_images"
+        app:showAsAction="never" />
 </menu>
