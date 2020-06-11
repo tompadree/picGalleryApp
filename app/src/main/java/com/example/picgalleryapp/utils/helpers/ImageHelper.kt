@@ -2,6 +2,7 @@ package com.example.picgalleryapp.utils.helpers
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import androidx.core.content.FileProvider
 import java.io.File
 
@@ -28,6 +29,16 @@ class ImageHelper {
             file.outputStream().use {
                 resized.compress(Bitmap.CompressFormat.JPEG, 90, it)
                 resized.recycle()
+            }
+        }
+
+        fun setOrientation(b: Bitmap, orientation: Int): Bitmap? {
+            if (orientation > 0) {
+                val matrix = Matrix()
+                matrix.setRotate(orientation.toFloat())
+                return Bitmap.createBitmap(b, 0, 0, b.width, b.height, matrix, false)
+            } else {
+                return b
             }
         }
 

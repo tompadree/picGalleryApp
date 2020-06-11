@@ -84,12 +84,29 @@
             android:visibility="@{viewModel.isCameraVisible? View.GONE: View.VISIBLE}"
             tools:visibility="visible">
 
-            <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+            <ImageView
                 android:id="@+id/cameraFragmentPreviewIV"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:zoomEnabled="false"
                 app:imageSource="@{viewModel.photo}"/>
+
+            <View
+                android:id="@+id/cropArea"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/cameraFragmentPreviewIV"
+                app:layout_constraintDimensionRatio="4.5:3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.example.picgalleryapp.ui.camera.DragRectView
+                android:id="@+id/dragRect"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
 
             <ImageButton
                 android:id="@+id/cameraFragmentConfirmButton"
@@ -113,6 +130,18 @@
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_clear_48dp"
                 android:onClick="@{() -> viewModel.saveRetake(false)}"/>
+
+            <ImageButton
+                android:id="@+id/cameraFragmentRotateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_crop_rotate_48dp"
+
+                />
 
         </RelativeLayout>
 

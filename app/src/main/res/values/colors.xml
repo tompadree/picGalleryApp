@@ -9,4 +9,6 @@
 
     <color name="object_text_color_black">#FF313131</color>
     <color name="separator_grey">#1F000000</color>
+
+    <color name="frame">#64FFDA</color>
 </resources>

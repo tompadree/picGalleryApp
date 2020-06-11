@@ -1,8 +1,10 @@
 package com.example.picgalleryapp.ui.camera
 
+import android.net.Uri
+import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.example.picgalleryapp.utils.helpers.ImageHelper
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
@@ -13,14 +15,13 @@ import java.io.File
  */
 
 @BindingAdapter("app:imageSource")
-fun setImagePreview(imageView: SubsamplingScaleImageView, file: File?){
+fun setImagePreview(imageView: ImageView, file: File?){
 
     try {
-        imageView.orientation = SubsamplingScaleImageView.ORIENTATION_90
-        imageView.setImage(ImageSource.uri(file.toString()))
+
+        imageView.setImageURI(Uri.fromFile(file))
     } catch (e: Exception) {
         e.printStackTrace()
-        imageView.recycle()
     }
 }
 
