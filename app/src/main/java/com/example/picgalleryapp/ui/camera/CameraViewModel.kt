@@ -2,6 +2,7 @@ package com.example.picgalleryapp.ui.camera
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -21,6 +22,7 @@ import com.example.picgalleryapp.data.source.PicGalleryRepository
 import com.example.picgalleryapp.utils.SingleLiveEvent
 import com.example.picgalleryapp.utils.helpers.ImageHelper
 import com.otaliastudios.cameraview.PictureResult
+import kotlinx.android.synthetic.main.fragment_camera.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -34,26 +36,28 @@ class CameraViewModel(
     private val repository: PicGalleryRepository) : ViewModel(){
 
     val isCameraVisible = ObservableField(true)
-    val photo = ObservableField<File>()
+    val photo = ObservableField<Bitmap>()
+    val photoFile = ObservableField<File>()
 
     val takePhoto = SingleLiveEvent<Unit>()
     val photoSaved = SingleLiveEvent<String>()
+    val photoCropped = SingleLiveEvent<IntArray>()
 
-    val crop = SingleLiveEvent<PictureResult>()
+    var cropFrame = IntArray(4)
 
     fun photoTaken(image: PictureResult) {
         isCameraVisible.set(false)
-        crop.postValue(image)
 
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            //https://youtrack.jetbrains.com/issue/IDEA-227359
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     val file = Glide.with(context).downloadOnly().load(image.data).submit().get()
-                    ImageHelper.resizeImage(file, 512)
-                    photo.set(file)
+                    val bitmap = ImageHelper.resizeImage(file, 512)
+                    photoFile.set(file)
+                    photo.set(ImageHelper.setOrientation(bitmap, 90))
+                    photoCropped.postValue(intArrayOf(bitmap.height, bitmap.width))
                     isCameraVisible.set(false)
                 } catch (e: Exception) {
                     Error(e)
@@ -70,18 +74,46 @@ class CameraViewModel(
     fun saveRetake(save: Boolean) {
         isCameraVisible.set(!save)
 
-        if(save)
+        if (save)
             viewModelScope.launch {
-                repository.savePicture(photo.get().toString())
-                photoSaved.postValue("")
+                photoFile.get()?.outputStream().use {
+                    photo.get()?.compress(Bitmap.CompressFormat.JPEG, 90, it)
+                }
+                repository.savePicture(photoFile.get().toString())
+                photoFile.set(null)
                 photo.set(null)
+                photoSaved.postValue("")
             }
         else
-            photo.get()?.delete()
+            photoFile.get()?.delete()
     }
 
     fun rotateImage(){
-
-
+        photo.get()?.let {  photo.set(ImageHelper.setOrientation(it, 90)) }
     }
+
+    fun crop(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val cropWidth = cropFrame[1] - cropFrame[0]
+                val cropHeight = cropFrame[3] - cropFrame[2]
+                val croppedBitmap = Bitmap.createBitmap(
+                    photo.get()!!,
+                    cropFrame[0],
+                    cropFrame[2],
+                    cropWidth,
+                    cropHeight
+                )
+
+                // Save the croppedBitmap
+
+                photo.set(croppedBitmap)
+                photoCropped.postValue(intArrayOf(cropWidth, cropHeight))
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
 }

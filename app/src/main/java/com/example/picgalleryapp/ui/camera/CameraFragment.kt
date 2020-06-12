@@ -31,9 +31,10 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
 
     private val viewModel: CameraViewModel by viewModel()
 
-    private lateinit var currentImage: PictureResult
+    private lateinit var currentImage: Bitmap
 
     private lateinit var globalRect: Rect
+    private lateinit var globalCoors : IntArray
 
     override fun onViewCreated() {
         super.onViewCreated()
@@ -45,6 +46,7 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         setupObservers()
+        setupCropFrame()
 
 
         cameraFragmentRotateButton.setOnClickListener(object : View.OnClickListener {
@@ -77,16 +79,18 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
 //            cameraFragmentPreviewIV.height
 //        )
         dragRect.setOnUpCallback(object : DragRectView.OnUpCallback {
-            override fun onRectFinished(rect: Rect?) {
+            override fun onRectFinished(rect: Rect?, coors: IntArray) {
                 rect?.let { globalRect = it }
-                Toast.makeText(
-                    context,
-                    "Rect is (" + rect?.left + ", " + rect?.top + ", " + rect?.right + ", " + rect?.bottom + ")",
-                    Toast.LENGTH_LONG
-                ).show();
+                viewModel.cropFrame = coors
+//                Toast.makeText(
+//                    context,
+//                    "Rect is (" + rect?.left + ", " + rect?.top + ", " + rect?.right + ", " + rect?.bottom + ")",
+//                    Toast.LENGTH_LONG
+//                ).show();
 
             }
         })
+
     }
 
     private fun setupObservers() {
@@ -99,110 +103,159 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
             activity?.onBackPressed()
         }
 
-        viewModel.crop.observe(this) {
-            it?.let { currentImage = it }
-            setupCropFrame()
+        viewModel.photoCropped.observe(this) {
+            it?.let {  dragRect.drawEdges(it[0], it[1]) }
         }
     }
 
     fun crop() {
 
+//        cameraFragmentPreviewIV.getViewTreeObserver()
+//            .addOnPreDrawListener(object :
+//                ViewTreeObserver.OnPreDrawListener {
+//                override fun onPreDraw(): Boolean {
+//                    return
+                    try {
+                        val cropWidth = globalCoors[1] - globalCoors[0]
+                        val cropHeight = globalCoors[3] - globalCoors[2]
+                        var croppedBitmap = Bitmap.createBitmap(currentImage, globalCoors[0], globalCoors[2], cropWidth, cropHeight)
 
-                try {
-
-                    currentImage.toBitmap(cameraFragmentPreviewIV.width, cameraFragmentPreviewIV.height, object : BitmapCallback {
-                        override fun onBitmapReady(bitmap: Bitmap?) {
-
-                            Glide.with(activity!!).load(currentImage.data)
-                                .listener(object : RequestListener<Drawable?> {
-
-                                    override fun onLoadFailed(
-                                        e: GlideException?,
-                                        model: Any?,
-                                        target: Target<Drawable?>?,
-                                        isFirstResource: Boolean
-                                    ): Boolean {
-                                        TODO("Not yet implemented")
-                                    }
-
-                                    override fun onResourceReady(
-                                        resource: Drawable?,
-                                        model: Any?,
-                                        target: com.bumptech.glide.request.target.Target<Drawable?>?,
-                                        dataSource: DataSource?,
-                                        isFirstResource: Boolean
-                                    ): Boolean {
-                                        // Get original bitmap
-//                        sourceBitmap = (resource as BitmapDrawable).bitmap
+                        // Save the croppedBitmap if you wish
+                        requireActivity().runOnUiThread {
+                            cameraFragmentPreviewIV.setImageBitmap(croppedBitmap)
+                            currentImage = croppedBitmap
+                        }
+                        true
+                    } catch (e: Exception){
+                        e.printStackTrace()
+                        false
+                    }
+//                    finally {
+//                        cameraFragmentPreviewIV.viewTreeObserver.removeOnPreDrawListener(
+//                            this
+//                        )
+//                    }
+//                }
+//            })
 
 
-                                        // Create a new bitmap corresponding to the crop area
+
+//                try {
+//
+//                    currentImage.toBitmap(cameraFragmentPreviewIV.width, cameraFragmentPreviewIV.height, object : BitmapCallback {
+//                        override fun onBitmapReady(bitmap: Bitmap?) {
+//
+//                            Glide.with(activity!!).load(currentImage.data)
+//                                .listener(object : RequestListener<Drawable?> {
+//
+//                                    override fun onLoadFailed(
+//                                        e: GlideException?,
+//                                        model: Any?,
+//                                        target: Target<Drawable?>?,
+//                                        isFirstResource: Boolean
+//                                    ): Boolean {
+//                                        TODO("Not yet implemented")
+//                                    }
+//
+//                                    override fun onResourceReady(
+//                                        resource: Drawable?,
+//                                        model: Any?,
+//                                        target: com.bumptech.glide.request.target.Target<Drawable?>?,
+//                                        dataSource: DataSource?,
+//                                        isFirstResource: Boolean
+//                                    ): Boolean {
+//                                        // Get original bitmap
+////                        sourceBitmap = (resource as BitmapDrawable).bitmap
+//
+//
+//                                        // Create a new bitmap corresponding to the crop area
 //                                        val cropAreaXY = IntArray(2)
 //                                        val placeHolderXY = IntArray(2)
 //                                        val rect = Rect()
-                                        cameraFragmentPreviewIV.getViewTreeObserver()
-                                            .addOnPreDrawListener(object :
-                                                ViewTreeObserver.OnPreDrawListener {
-                                                override fun onPreDraw(): Boolean {
-                                                    return try {
-//                                                        cameraFragmentPreviewIV.getLocationOnScreen(
-//                                                            placeHolderXY
-//                                                        )
+//                                        cameraFragmentPreviewIV.getViewTreeObserver()
+//                                            .addOnPreDrawListener(object :
+//                                                ViewTreeObserver.OnPreDrawListener {
+//                                                override fun onPreDraw(): Boolean {
+//                                                    return try {
+////                                                        cameraFragmentPreviewIV.getLocationOnScreen(
+////                                                            placeHolderXY
+////                                                        )
 //                                                        cropArea.getLocationOnScreen(cropAreaXY)
 //                                                        cropArea.getGlobalVisibleRect(rect)
-                                                        var left =  globalRect.left / (context!!.resources
-                                                            .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-                                                        var right =  globalRect.right / (context!!.resources
-                                                            .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-
-                                                        globalRect.top -= ((cameraFragmentPreviewIV.height - bitmap!!.height)/2)
-                                                        var top =  globalRect.top / (context!!.resources
-                                                            .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-                                                        val test = ((cameraFragmentPreviewIV.height - bitmap!!.height)/2)
-                                                        globalRect.bottom -= ((cameraFragmentPreviewIV.height - bitmap!!.height)/2)
-                                                        var bottom =  globalRect.bottom / (context!!.resources
-                                                            .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+////                                                        var left =  globalRect.left / (context!!.resources
+////                                                            .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+////                                                        var right =  globalRect.right / (context!!.resources
+////                                                            .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+////
+////                                                        globalRect.top -= ((cameraFragmentPreviewIV.height - bitmap!!.height)/2)
+////                                                        var top =  globalRect.top / (context!!.resources
+////                                                            .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+////                                                        val test = ((cameraFragmentPreviewIV.height - bitmap!!.height)/2)
+////                                                        globalRect.bottom -= ((cameraFragmentPreviewIV.height - bitmap!!.height)/2)
+////                                                        var bottom =  globalRect.bottom / (context!!.resources
+////                                                            .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+//////                                                        bottom -= ((cameraFragmentPreviewIV.height - bitmap!!.height)/2)
+//
+//                                                        var left =
+//                                                            globalCoors[0] / (context!!.resources
+//                                                                .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+//                                                        var right =
+//                                                            globalRect.right / (context!!.resources
+//                                                                .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+//
+//                                                        globalRect.top -= ((cameraFragmentPreviewIV.height - bitmap!!.height) / 2)
+////                                                        var top =
+////                                                            globalRect.top / (context!!.resources
+////                                                                .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+//
+//                                                        globalRect.bottom -= ((cameraFragmentPreviewIV.height - bitmap!!.height) / 2)
+//                                                        var bottom =
+//                                                            globalRect.bottom / (context!!.resources
+//                                                                .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
 //                                                        bottom -= ((cameraFragmentPreviewIV.height - bitmap!!.height)/2)
-
-//                                                        val cropWidth = bitmap!!.width - left - right
-//                                                        val cropHeight = bitmap.height - top - bottom
-                                                        val cropWidth = right - left
-                                                        val cropHeight = bottom - top
-                                                        var croppedBitmap = Bitmap.createBitmap(bitmap, left.toInt(), top.toInt(), cropWidth.toInt(), cropHeight.toInt())
-
-//                                                        var croppedBitmap = Bitmap.createBitmap(
-//                                                            bitmap!!,
-//                                                            globalRect.left,
-//                                                            globalRect.top,//cropAreaXY[0],
-////                                                            cropAreaXY[1] - placeHolderXY[1],
-//                                                            112,
-//                                                            112
+//
+//                                                        val test = ((cameraFragmentPreviewIV.height - bitmap!!.height) / 2)
+//                                                        var top = globalCoors[2] - ((cameraFragmentPreviewIV.height - bitmap!!.height)/2)
+//                                                        val cropWidth = globalCoors[1] - globalCoors[0]
+//                                                        val cropHeight = globalCoors[3] - globalCoors[2]
+//                                                        var croppedBitmap = Bitmap.createBitmap(bitmap, globalCoors[0], globalCoors[2], cropWidth.toInt(), cropHeight.toInt())
+//
+////                                                        var croppedBitmap = Bitmap.createBitmap(
+////                                                            bitmap!!,
+////                                                            globalRect.left,
+////                                                            globalRect.top,//cropAreaXY[0],
+//////                                                            cropAreaXY[1] - placeHolderXY[1],
+////                                                            112,
+////                                                            112
+////                                                        )
+//                                                        // Save the croppedBitmap if you wish
+//                                                        activity!!.runOnUiThread { cameraFragmentPreviewIV.setImageBitmap(croppedBitmap)
+//                                                        }
+//                                                        true
+//                                                    } catch (e: Exception){
+//                                                        e.printStackTrace()
+//                                                        false
+//                                                    } finally {
+//                                                        cameraFragmentPreviewIV.viewTreeObserver.removeOnPreDrawListener(
+//                                                            this
 //                                                        )
-                                                        // Save the croppedBitmap if you wish
-                                                        activity!!.runOnUiThread { cameraFragmentPreviewIV.setImageBitmap(croppedBitmap)
-                                                        }
-                                                        true
-                                                    } finally {
-                                                        cameraFragmentPreviewIV.viewTreeObserver.removeOnPreDrawListener(
-                                                            this
-                                                        )
-                                                    }
-                                                }
-                                            })
-                                        return false
-                                    }
-
-                                }).into(
-                                    cameraFragmentPreviewIV
-                                )
-
-                        }
-                    })
-
-                } catch (e: Exception) {
-                    Result.Error(e)
-                    e.printStackTrace()
-                }
+//                                                    }
+//                                                }
+//                                            })
+//                                        return false
+//                                    }
+//
+//                                }).into(
+//                                    cameraFragmentPreviewIV
+//                                )
+//
+//                        }
+//                    })
+//
+//                } catch (e: Exception) {
+//                    Result.Error(e)
+//                    e.printStackTrace()
+//                }
 
 
     }

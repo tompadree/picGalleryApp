@@ -1,5 +1,6 @@
 package com.example.picgalleryapp.ui.camera
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
@@ -15,11 +16,10 @@ import java.io.File
  */
 
 @BindingAdapter("app:imageSource")
-fun setImagePreview(imageView: ImageView, file: File?){
+fun setImagePreview(imageView: ImageView, image: Bitmap?){
 
     try {
-
-        imageView.setImageURI(Uri.fromFile(file))
+        imageView.setImageBitmap(image)
     } catch (e: Exception) {
         e.printStackTrace()
     }

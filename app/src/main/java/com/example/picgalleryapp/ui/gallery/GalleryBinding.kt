@@ -23,7 +23,6 @@ fun setItems(listView: RecyclerView, items: List<ImageUri>?) {
 fun setImagePreview(imageView: SubsamplingScaleImageView, uri: String){
 
     try {
-        imageView.orientation = SubsamplingScaleImageView.ORIENTATION_90
         imageView.setImage(ImageSource.uri(uri))
     } catch (e: Exception) {
         e.printStackTrace()

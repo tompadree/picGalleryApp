@@ -86,9 +86,8 @@
 
             <ImageView
                 android:id="@+id/cameraFragmentPreviewIV"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:zoomEnabled="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:imageSource="@{viewModel.photo}"/>
 
             <View
@@ -107,41 +106,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-
-            <ImageButton
-                android:id="@+id/cameraFragmentConfirmButton"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="80dp"
                 android:layout_marginBottom="40dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_check_48dp"
-                android:onClick="@{() -> viewModel.saveRetake(true)}"/>
+                android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/cameraFragmentRetakeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginEnd="80dp"
-                android:layout_marginBottom="40dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_clear_48dp"
-                android:onClick="@{() -> viewModel.saveRetake(false)}"/>
+                <ImageButton
+                    android:id="@+id/cameraFragmentConfirmButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:background="@android:color/transparent"
+                    android:onClick="@{() -> viewModel.saveRetake(true)}"
+                    android:src="@drawable/ic_check_48dp"
+                    android:layout_weight="1"/>
 
-            <ImageButton
-                android:id="@+id/cameraFragmentRotateButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="40dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_crop_rotate_48dp"
 
-                />
+                <ImageButton
+                    android:id="@+id/cameraFragmentRotateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:onClick="@{() -> viewModel.rotateImage()}"
+                    android:src="@drawable/ic_crop_rotate_48dp"
+                    android:layout_weight="1"/>
+
+                <ImageButton
+                    android:id="@+id/cameraFragmentCropButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:onClick="@{() -> viewModel.crop()}"
+                    android:src="@drawable/ic_crop_24dp"
+                    android:layout_weight="1"/>
+
+                <ImageButton
+                    android:id="@+id/cameraFragmentRetakeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="30dp"
+                    android:background="@android:color/transparent"
+                    android:onClick="@{() -> viewModel.saveRetake(false)}"
+                    android:src="@drawable/ic_clear_48dp"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
 
         </RelativeLayout>
 

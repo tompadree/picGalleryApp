@@ -12,10 +12,10 @@ import java.io.File
 
 class ImageHelper {
     companion object {
-        fun resizeImage(file: File, scaleTo: Int) {
+        fun resizeImage(file: File, scaleTo: Int): Bitmap {
             val bmOptions = BitmapFactory.Options()
             bmOptions.inJustDecodeBounds = true
-            BitmapFactory.decodeFile(file.absolutePath, bmOptions)
+            val temp = BitmapFactory.decodeFile(file.absolutePath, bmOptions)
             val photoW = bmOptions.outWidth
             val photoH = bmOptions.outHeight
 
@@ -25,10 +25,11 @@ class ImageHelper {
             bmOptions.inJustDecodeBounds = false
             bmOptions.inSampleSize = scaleFactor
 
-            val resized = BitmapFactory.decodeFile(file.absolutePath, bmOptions) ?: return
+            val resized = BitmapFactory.decodeFile(file.absolutePath, bmOptions) ?: return temp
             file.outputStream().use {
                 resized.compress(Bitmap.CompressFormat.JPEG, 90, it)
-                resized.recycle()
+//                resized.recycle()
+                return resized
             }
         }
 
@@ -40,6 +41,10 @@ class ImageHelper {
             } else {
                 return b
             }
+        }
+
+        fun saveBitmapToFile(){
+
         }
 
     }

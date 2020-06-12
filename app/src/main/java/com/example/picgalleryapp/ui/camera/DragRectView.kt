@@ -3,6 +3,7 @@ package com.example.picgalleryapp.ui.camera
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.text.TextPaint
 import android.util.AttributeSet
@@ -25,9 +26,10 @@ class DragRectView : View {
     private var mDrawRect = false
     private var mTextPaint: TextPaint? = null
     private var mCallback: OnUpCallback? = null
+    private var mCanvas: Canvas? = null
 
     interface OnUpCallback {
-        fun onRectFinished(rect: Rect?)
+        fun onRectFinished(rect: Rect?, coors: IntArray)
     }
 
     constructor(context: Context?) : super(context) {
@@ -71,6 +73,22 @@ class DragRectView : View {
         mTextPaint!!.textSize = 20f
     }
 
+    fun drawEdges(endX: Int, endY: Int) {
+//        if(init) {
+            mEndX = endX
+            mEndY = endY
+//        }
+//        else
+//        {
+//            mEndX -= mStartX
+//            mEndY -= mStartY
+//        }
+        mStartX = 0
+        mStartY = 0
+        if(!mDrawRect) mDrawRect = true
+        invalidate()
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
         // TODO: be aware of multi-touches
@@ -97,7 +115,8 @@ class DragRectView : View {
                         Rect(
                             Math.min(mStartX, mEndX), Math.min(mStartY, mEndY),
                             Math.max(mEndX, mStartX), Math.max(mStartY, mEndY)
-                        )
+                        ),
+                        intArrayOf(mStartX, mEndX, mStartY, mEndY)
                     )
                 }
                 invalidate()
@@ -124,6 +143,9 @@ class DragRectView : View {
                 Math.max(mEndY, mStartY).toFloat(),
                 mTextPaint!!
             )
+            mCanvas = canvas
         }
     }
+
+
 }
