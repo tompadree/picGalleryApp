@@ -21,7 +21,7 @@ import java.lang.Exception
 class GalleryViewModel(
     private val repository: PicGalleryRepository,
     private val context: Context,
-private val dispatchers: CoroutineDispatcher = Dispatchers.IO ) : ViewModel() {
+    private val dispatchers: CoroutineDispatcher = Dispatchers.IO ) : ViewModel() {
 
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading

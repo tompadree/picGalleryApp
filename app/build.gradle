@@ -14,6 +14,18 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.example.picgalleryapp.koin.KoinTestRunner"
+    }
+    android {
+        sourceSets {
+            String sharedTestDir = 'src/sharedTest/java'
+            test {
+                java.srcDir sharedTestDir
+            }
+            androidTest {
+                java.srcDir sharedTestDir
+            }
+        }
     }
     dataBinding {
         enabled = true
@@ -89,7 +101,19 @@ dependencies {
     // Idling
     implementation "androidx.test.espresso:espresso-idling-resource:3.3.0-beta01"
 
+    // Test
     testImplementation 'junit:junit:4.12'
+    testImplementation "org.koin:koin-test:2.1.5"
+    testImplementation "androidx.test:core-ktx:1.2.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.1"
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation "com.google.truth:truth:1.0.1"
+
+    // AndroidTest
+    androidTestImplementation "org.koin:koin-test:2.1.5"
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation "androidx.test:core-ktx:1.2.0"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.1"
+    androidTestImplementation "com.google.truth:truth:1.0.1"
 }
