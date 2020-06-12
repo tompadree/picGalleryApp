@@ -1,6 +1,7 @@
 package com.example.picgalleryapp
 
 import android.app.Application
+import com.example.picgalleryapp.di.AppModule
 import com.example.picgalleryapp.di.DataModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -20,7 +21,7 @@ class App : Application() {
         startKoin {
             androidLogger()
             androidContext(this@App)
-            modules(listOf(DataModule))
+            modules(listOf(AppModule, DataModule))
         }
     }
 }

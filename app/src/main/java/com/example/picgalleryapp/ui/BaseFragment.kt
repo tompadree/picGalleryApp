@@ -54,7 +54,12 @@ abstract class BaseFragment : Fragment(), CoroutineScope {
     }
 
     protected open fun showError(throwable: Throwable) {
-       showUnknownError()
+        if (throwable is IllegalArgumentException){
+            showError(getString(R.string.inside_image))
+        } else if (throwable is Exception) {
+            showError(throwable.localizedMessage)
+        } else
+            showUnknownError()
     }
 
     protected open fun showError(error: String?) {

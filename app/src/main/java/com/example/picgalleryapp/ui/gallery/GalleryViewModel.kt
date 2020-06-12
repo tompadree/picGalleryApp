@@ -2,7 +2,6 @@ package com.example.picgalleryapp.ui.gallery
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.lifecycle.*
 import com.bumptech.glide.Glide
 import com.example.picgalleryapp.data.models.ImageUri
@@ -36,10 +35,13 @@ private val dispatchers: CoroutineDispatcher = Dispatchers.IO ) : ViewModel() {
         _page.switchMap { page ->
             repository.observePictures(page).map {
                 if (it is Success) {
+                    _dataLoading.value = false
                     it.data
                 } else {
-                    emptyList()
+                    _dataLoading.value = false
+                     emptyList()
                 }
+
             }
         }
 
@@ -50,13 +52,14 @@ private val dispatchers: CoroutineDispatcher = Dispatchers.IO ) : ViewModel() {
         it.isEmpty()
     }
 
-    fun refresh(refresh: Boolean) {
-        _page.value = 0
+    fun refresh() {
+        _page.postValue(0)
     }
 
     fun deleteImages(){
         viewModelScope.launch (dispatchers) {
             repository.deletePics()
+            refresh()
         }
     }
 

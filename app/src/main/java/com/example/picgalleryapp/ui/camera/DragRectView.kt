@@ -1,9 +1,9 @@
 package com.example.picgalleryapp.ui.camera
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.text.TextPaint
 import android.util.AttributeSet
@@ -16,7 +16,7 @@ import com.example.picgalleryapp.R
  * @author Tomislav Curis
  */
 
-
+// https://stackoverflow.com/a/18781747/5577679
 class DragRectView : View {
     private var mRectPaint: Paint? = null
     private var mStartX = 0
@@ -74,24 +74,17 @@ class DragRectView : View {
     }
 
     fun drawEdges(endX: Int, endY: Int) {
-//        if(init) {
-            mEndX = endX
-            mEndY = endY
-//        }
-//        else
-//        {
-//            mEndX -= mStartX
-//            mEndY -= mStartY
-//        }
         mStartX = 0
         mStartY = 0
+        mEndX = endX
+        mEndY = endY
         if(!mDrawRect) mDrawRect = true
         invalidate()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
-        // TODO: be aware of multi-touches
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 mDrawRect = false
@@ -146,6 +139,4 @@ class DragRectView : View {
             mCanvas = canvas
         }
     }
-
-
 }

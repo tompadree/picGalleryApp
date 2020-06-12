@@ -16,12 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-<!--        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-<!--            android:id="@+id/galleryFragSwipeLayout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            app:onRefreshListener="@{() -> viewModel.refresh(true)}"-->
-<!--            app:refreshing="@{viewModel.dataLoading}">-->
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/galleryFragSwipeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:onRefreshListener="@{() -> viewModel.refresh()}"
+            app:refreshing="@{viewModel.dataLoading}">
 
 
             <RelativeLayout
@@ -94,7 +94,7 @@
 
             </RelativeLayout>
 
-<!--        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
