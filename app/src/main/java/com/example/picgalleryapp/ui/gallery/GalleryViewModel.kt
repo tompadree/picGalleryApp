@@ -13,6 +13,8 @@ import com.example.picgalleryapp.utils.helpers.ImageHelper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
+import java.lang.Error
 import java.lang.Exception
 
 /**
@@ -20,7 +22,6 @@ import java.lang.Exception
  */
 class GalleryViewModel(
     private val repository: PicGalleryRepository,
-    private val context: Context,
     private val dispatchers: CoroutineDispatcher = Dispatchers.IO ) : ViewModel() {
 
     private val _dataLoading = MutableLiveData<Boolean>()
@@ -37,10 +38,13 @@ class GalleryViewModel(
                 if (it is Success) {
                     _dataLoading.value = false
                     it.data
-                } else {
+                } else if(it is Result.Error){
                     _dataLoading.value = false
+                    _error.postValue(it.exception)
                      emptyList()
                 }
+                else
+                    emptyList()
 
             }
         }
@@ -53,23 +57,23 @@ class GalleryViewModel(
     }
 
     fun refresh() {
+        _dataLoading.value = true
         _page.postValue(0)
     }
 
     fun deleteImages(){
-        viewModelScope.launch (dispatchers) {
+        viewModelScope.launch {
             repository.deletePics()
             refresh()
         }
     }
 
-    fun handleGalleryPic(imageData: Intent){
+    fun handleGalleryPic(imageFile: File){
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers) {
             try {
-                val file = Glide.with(context).downloadOnly().load(imageData.data).submit().get()
-                ImageHelper.resizeImage(file, 512)
-                repository.savePicture(file.toString())
+                ImageHelper.resizeImage(imageFile, 512)
+                repository.savePicture(imageFile.toString())
             } catch (e: Exception) {
                 Result.Error(e)
                 e.printStackTrace()

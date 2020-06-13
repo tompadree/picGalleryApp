@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.bumptech.glide.Glide
 import com.example.picgalleryapp.R
 import com.example.picgalleryapp.databinding.FragmentGalleryBinding
 import com.example.picgalleryapp.ui.BindingFragment
@@ -119,7 +120,8 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
         if (requestCode == SELECT_PICTURE) {
             if (resultCode == Activity.RESULT_OK) {
                 try {
-                    data?.let { viewModel.handleGalleryPic(data) }
+                    val file = Glide.with(this).downloadOnly().load(data?.data).submit().get()
+                    data?.let { viewModel.handleGalleryPic(file) }
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }

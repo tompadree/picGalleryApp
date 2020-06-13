@@ -21,7 +21,6 @@ import java.io.File
  * @author Tomislav Curis
  */
 class CameraViewModel(
-    private val context : Context,
     private val repository: PicGalleryRepository) : ViewModel(){
 
     val isCameraVisible = ObservableField(true)
@@ -40,12 +39,11 @@ class CameraViewModel(
     protected val _error = SingleLiveEvent<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
-    fun photoTaken(image: PictureResult) {
+    fun photoTaken(file: File) {
         isCameraVisible.set(false)
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try {
-                val file = Glide.with(context).downloadOnly().load(image.data).submit().get()
                 val bitmap = ImageHelper.resizeImage(file, 512)
                 photoFile.set(file)
                 photo.set(ImageHelper.setOrientation(bitmap, 90))
@@ -88,7 +86,7 @@ class CameraViewModel(
     }
 
     fun crop(){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try {
                 val cropWidth = cropFrame[1] - cropFrame[0]
                 val cropHeight = cropFrame[3] - cropFrame[2]

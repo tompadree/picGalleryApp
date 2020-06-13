@@ -22,7 +22,13 @@ class FakeRepository : PicGalleryRepository {
     }
 
     override fun observePictures(page: Int): LiveData<Result<List<ImageUri>>> {
-        runBlocking { observableImages.value = Result.Success(currentListPics) }
+
+        runBlocking {
+            if (shouldReturnError) {
+                observableImages.value = Result.Error(Exception("Test exception"))
+            } else
+                observableImages.value = Result.Success(currentListPics)
+        }
         return observableImages
     }
 
