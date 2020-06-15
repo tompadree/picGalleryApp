@@ -17,6 +17,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -25,6 +26,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.picgalleryapp.R
 import com.example.picgalleryapp.TestApp
 import com.example.picgalleryapp.data.models.ImageUri
+import com.example.picgalleryapp.data.models.Result
 import com.example.picgalleryapp.data.source.FakeRepository
 import com.example.picgalleryapp.data.source.PicGalleryRepository
 import com.example.picgalleryapp.ui.gallery.GalleryFragment
@@ -35,6 +37,7 @@ import org.hamcrest.*
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -59,9 +62,6 @@ class GalleryFragmentTest : KoinTest{
     private val imageUri = ImageUri("Uri1")
     private val imageUri2 = ImageUri("Uri2")
     private val imageUri3 = ImageUri("Uri3")
-    private val images = listOf(imageUri, imageUri2, imageUri3)
-
-    private val viewModel : GalleryViewModel by inject()
 
     @Before
     fun initRepo() {
@@ -86,11 +86,11 @@ class GalleryFragmentTest : KoinTest{
     }
 
     @Test
-    fun checkImage(){
+    fun checkImageOnStart(){
         // GIVEN - On the home screen
         launchFragment()
 
-        // THEN - Verify repos are displayed on screen
+        // THEN - Verify image is displayed on screen
         onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(R.drawable.test_image)))
 
     }
@@ -100,67 +100,63 @@ class GalleryFragmentTest : KoinTest{
     fun deleteImage(){
         // GIVEN - On the home screen
         launchFragment()
-//        Espresso.openContextualActionModeOverflowMenu()
 
-//        onView(withId(R.id.galleryFragToolbar)).perform(Toolbar(hasDescendant(withText(withText(""))), click()))
+        // THEN - Verify image is displayed on screen
+        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(R.drawable.test_image)))
 
-//        val btnMenu: UiObject =
-//            mDevice.findObject(UiSelector().description(mActivity.getString(R.string.menu_button_identifier)))
-//        btnMenu.click()
+        onView(withText(R.string.delete_images)).perform(click())
 
-//        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext())
-//        onView(withContentDescription(R.string.open_menu))
-//            .perform(click())
-//        onView(withText(R.string.delete_images)).perform(click())
-
-//        onView(allOf(instanceOf(View::class.java), withParent(withId(R.id.galleryFragToolbar)))).perform(click())
-
-//        onView(withId(R.id.galleryFragToolbar))
-//            .check(matches(withChild(withChild(withText("Open menu")))))
-
-//        val textView4 = onView(
-//            Matchers.allOf(
-//                withId(R.id.menuMore), withContentDescription("Open menu"),
-//                childAtPosition(
-//                    childAtPosition(
-//                        withId(R.id.galleryFragToolbar),
-//                        1
-//                    ),
-//                    0
-//                ),
-//                isDisplayed()
-//            )
-//        )
-        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext())
-//        textView4.check(matches(withText("Open menu")))
-//
-//        onView(withId(R.id.galleryFragToolbar)).check(matches(hasDescendant(withText("Open menu"))));
-
-//        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext())
-//        onView(withText(R.string.delete_images)).perform(click())
-////        // Check if image exists
-//        onView(withId(R.id.galleryItemIv)).check(matches(not(customMatcherForDrawable(R.drawable.test_image))))
-
-    }
-
-    private fun childAtPosition(
-        parentMatcher: Matcher<View>, position: Int
-    ): Matcher<View> {
-
-        return object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description) {
-                description.appendText("Child at position $position in parent ")
-                parentMatcher.describeTo(description)
-            }
-
-            public override fun matchesSafely(view: View): Boolean {
-                val parent = view.parent
-                return parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position)
-            }
+        // Check if image exist
+        val pics = runBlocking {
+            (repository.fetchPictures(0, 30) as Result.Success).data
         }
+        Assert.assertEquals(pics.size, 0)
     }
 
+
+    @Test
+    fun addPhoto(){
+        // GIVEN - On the home screen
+        launchFragment()
+
+        // THEN - Verify image is displayed on screen
+        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(R.drawable.test_image)))
+
+        onView(withText(R.string.take_photo)).perform(click())
+
+        val pics = runBlocking {
+            repository.savePicture("UriTest")
+            (repository.fetchPictures(0, 30) as Result.Success).data
+        }
+
+        // Check if images exist after adding
+        Assert.assertEquals(pics.size, 2)
+        Assert.assertEquals(pics[0].uri, "android.resource://com.example.picgalleryapp/drawable/test_image")
+        Assert.assertEquals(pics[1].uri, "UriTest")
+    }
+
+    @Test
+    fun addFromRoll(){
+        // GIVEN - On the home screen
+        launchFragment()
+
+        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(R.drawable.test_image)))
+
+        // THEN - Verify image is displayed on screen
+        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(R.drawable.test_image)))
+
+        onView(withText(R.string.pick_image)).perform(click())
+
+        val pics = runBlocking {
+            repository.savePicture("UriTest")
+            (repository.fetchPictures(0, 30) as Result.Success).data
+        }
+
+        // Check if images exist after adding
+        Assert.assertEquals(pics.size, 2)
+        Assert.assertEquals(pics[0].uri, "android.resource://com.example.picgalleryapp/drawable/test_image")
+        Assert.assertEquals(pics[1].uri, "UriTest")
+    }
 
     // https://medium.com/@dbottillo/android-ui-test-espresso-matcher-for-imageview-1a28c832626f
     private fun <T> customMatcherForDrawable(imageId: Int): Matcher<T> {
