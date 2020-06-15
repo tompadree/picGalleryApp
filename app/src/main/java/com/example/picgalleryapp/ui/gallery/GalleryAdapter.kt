@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.example.picgalleryapp.data.models.ImageUri
 import com.example.picgalleryapp.databinding.ItemGalleryBinding
 import kotlinx.android.extensions.LayoutContainer

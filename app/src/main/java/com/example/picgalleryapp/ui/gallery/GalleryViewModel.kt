@@ -10,6 +10,7 @@ import com.example.picgalleryapp.data.source.PicGalleryRepository
 import com.example.picgalleryapp.utils.SingleLiveEvent
 import com.example.picgalleryapp.data.models.Result.Success
 import com.example.picgalleryapp.utils.helpers.ImageHelper
+import com.otaliastudios.cameraview.PictureResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,6 +22,7 @@ import java.lang.Exception
  * @author Tomislav Curis
  */
 class GalleryViewModel(
+    private val context: Context,
     private val repository: PicGalleryRepository,
     private val dispatchers: CoroutineDispatcher = Dispatchers.IO ) : ViewModel() {
 
@@ -68,12 +70,13 @@ class GalleryViewModel(
         }
     }
 
-    fun handleGalleryPic(imageFile: File){
+    fun handleGalleryPic(imageData: Intent){
 
         viewModelScope.launch(dispatchers) {
             try {
-                ImageHelper.resizeImage(imageFile, 512)
-                repository.savePicture(imageFile.toString())
+                val file = Glide.with(context).downloadOnly().load(imageData.data).submit().get()
+                ImageHelper.resizeImage(file, 512)
+                repository.savePicture(file.toString())
             } catch (e: Exception) {
                 Result.Error(e)
                 e.printStackTrace()

@@ -6,7 +6,6 @@ import android.net.Uri
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
-import com.davemorrissey.labs.subscaleview.ImageSource
 import com.example.picgalleryapp.utils.helpers.ImageHelper
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraView
@@ -33,12 +32,11 @@ fun onPhotoTaken(cameraView: CameraView, photoListener: PhotoListener) {
     cameraView.addCameraListener(object : CameraListener() {
         override fun onPictureTaken(result: PictureResult) {
             super.onPictureTaken(result)
-            val file = Glide.with(cameraView).downloadOnly().load(result.data).submit().get()
-            photoListener.photoTaken(file)
+            photoListener.photoTaken(result)
         }
     })
 }
 
 interface PhotoListener {
-    fun photoTaken(file: File)
+    fun photoTaken(result: PictureResult)
 }

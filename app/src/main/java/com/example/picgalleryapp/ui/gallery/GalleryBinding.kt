@@ -1,9 +1,9 @@
 package com.example.picgalleryapp.ui.gallery
 
+import android.net.Uri
+import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.example.picgalleryapp.data.models.ImageUri
 
 /**
@@ -18,12 +18,11 @@ fun setItems(listView: RecyclerView, items: List<ImageUri>?) {
 }
 
 @BindingAdapter("app:imageSourceGallery")
-fun setImagePreview(imageView: SubsamplingScaleImageView, uri: String){
+fun setImagePreview(imageView: ImageView, uri: String){
 
     try {
-        imageView.setImage(ImageSource.uri(uri))
+        imageView.setImageURI(Uri.parse(uri))
     } catch (e: Exception) {
         e.printStackTrace()
-        imageView.recycle()
     }
 }

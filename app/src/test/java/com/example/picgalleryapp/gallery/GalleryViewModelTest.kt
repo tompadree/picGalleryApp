@@ -1,6 +1,10 @@
 package com.example.picgalleryapp.gallery
 
+import android.app.Application
+import android.content.Context
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
 import com.example.picgalleryapp.data.models.ImageUri
 import com.example.picgalleryapp.data.source.FakeRepository
 import com.example.picgalleryapp.di.AppModule
@@ -18,11 +22,18 @@ import org.koin.test.KoinTestRule
 import org.koin.test.inject
 import com.google.common.truth.Truth.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.runner.RunWith
+import org.koin.core.KoinApplication
+import org.koin.core.context.KoinContext
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.junit.MockitoJUnitRunner
 
 /**
  * @author Tomislav Curis
  */
 
+@RunWith(MockitoJUnitRunner::class)
 @ExperimentalCoroutinesApi
 class GalleryViewModelTest : KoinTest {
 
@@ -52,13 +63,16 @@ class GalleryViewModelTest : KoinTest {
     private val imageUri2 = ImageUri("Uri2")
     private val imageUri3 = ImageUri("Uri3")
 
+    @Mock
+    private lateinit var mockContext: Context
+
     @Before
     fun setupViewModel() {
         repository = FakeRepository()
 
         repository.currentListPics = mutableListOf(imageUri, imageUri2, imageUri3)
 
-        galleryViewModel = GalleryViewModel(repository, dispatchers)
+        galleryViewModel = GalleryViewModel(mockContext, repository, dispatchers)
     }
 
     @Test

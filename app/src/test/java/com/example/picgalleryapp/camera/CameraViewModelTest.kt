@@ -1,31 +1,37 @@
 package com.example.picgalleryapp.camera
 
+import android.app.Application
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.picgalleryapp.data.models.ImageUri
+import androidx.test.core.app.ApplicationProvider
 import com.example.picgalleryapp.data.source.FakeRepository
 import com.example.picgalleryapp.di.AppModule
 import com.example.picgalleryapp.di.DataModule
-import com.example.picgalleryapp.getOrAwaitValue
-import com.example.picgalleryapp.observeForTesting
 import com.example.picgalleryapp.ui.camera.CameraViewModel
-import com.example.picgalleryapp.ui.gallery.GalleryViewModel
 import com.example.picgalleryapp.util.MainCoroutineRule
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
 import org.koin.test.inject
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.mock
+import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnitRunner
 import java.io.File
-import com.google.common.truth.Truth.*
+
 
 /**
  * @author Tomislav Curis
  */
 
+@RunWith(MockitoJUnitRunner::class)
 @ExperimentalCoroutinesApi
 class CameraViewModelTest : KoinTest {
 
@@ -51,20 +57,18 @@ class CameraViewModelTest : KoinTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
+    @Mock
+    private lateinit var mockContext: Context
 
     @Before
     fun setupViewModel() {
         repository = FakeRepository()
-//        val imageUri = ImageUri("Uri1")
-//        val imageUri2 = ImageUri("Uri2")
-//        val imageUri3 = ImageUri("Uri3")
-//        repository.currentListPics = mutableListOf(imageUri, imageUri2, imageUri3)
 
-        cameraViewModel = CameraViewModel(repository)
+        cameraViewModel = CameraViewModel(mockContext, repository)
     }
 
     @Test
-    fun saveImageFromaCamera() {
+    fun saveImageFromCamera() {
         // Pause dispatcher so we can verify initial values
         mainCoroutineRule.pauseDispatcher()
 

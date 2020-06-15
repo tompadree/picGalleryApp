@@ -30,13 +30,12 @@
             android:background="@drawable/rounded_corners"
             android:visibility="visible">
 
-            <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+            <ImageView
                 android:id="@+id/galleryItemIv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:keepScreenOn="true"
-                app:imageSourceGallery="@{imageUri.uri}"
-                app:zoomEnabled="false" />
+                app:imageSourceGallery="@{imageUri.uri}" />
 
         </RelativeLayout>
 

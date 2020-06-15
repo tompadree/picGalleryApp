@@ -120,8 +120,7 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
         if (requestCode == SELECT_PICTURE) {
             if (resultCode == Activity.RESULT_OK) {
                 try {
-                    val file = Glide.with(this).downloadOnly().load(data?.data).submit().get()
-                    data?.let { viewModel.handleGalleryPic(file) }
+                    data?.let { viewModel.handleGalleryPic(it) }
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }

@@ -2,6 +2,8 @@ package com.example.picgalleryapp.di
 
 import androidx.fragment.app.FragmentActivity
 import androidx.room.Room
+import com.bumptech.glide.Glide
+import com.bumptech.glide.GlideBuilder
 import com.example.picgalleryapp.data.source.PicGalleryDataSource
 import com.example.picgalleryapp.data.source.PicGalleryRepository
 import com.example.picgalleryapp.data.source.PicGalleryRepositoryImpl
@@ -38,8 +40,7 @@ val DataModule = module {
 
     single { PicGalleryRepositoryImpl(get()) as PicGalleryRepository }
 
-
-    viewModel { GalleryViewModel(get(), get()) }
-    viewModel { CameraViewModel(get()) }
+    viewModel { GalleryViewModel(get(), get(), get()) }
+    viewModel { CameraViewModel(get(), get()) }
 
 }
