@@ -3,19 +3,14 @@ package com.example.picgalleryapp.ui.gallery
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.bumptech.glide.Glide
 import com.example.picgalleryapp.R
 import com.example.picgalleryapp.databinding.FragmentGalleryBinding
 import com.example.picgalleryapp.ui.BindingFragment
-import com.example.picgalleryapp.ui.PicGalleryActivity
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.IOException
@@ -40,42 +35,17 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
 
-
         setupObservers()
         setupRV()
+        setupListeners()
 
     }
 
     override fun onResume() {
         super.onResume()
-        if(activity is PicGalleryActivity){
-            (activity as PicGalleryActivity).setSupportActionBar(galleryFragToolbar)
-            setHasOptionsMenu(true)
-        }
 
         viewModel.refresh()
     }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.gallery_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem) =
-        when(item.itemId){
-            R.id.menuTakePhoto -> {
-                openCamera()
-                true
-            }
-            R.id.menuPickImage -> {
-                openChooser()
-                true
-            }
-            R.id.menuDeleteImages -> {
-                viewModel.deleteImages()
-                true
-            }
-            else -> false
-        }
 
     fun setupObservers() {
 
@@ -88,7 +58,6 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
 
         with(galleryFragRv) {
             layoutManager = GridLayoutManager(context, 2)
-//            layoutManager = LinearLayoutManager(context)
             adapter = galleryAdapter
 
             // For testing
@@ -100,6 +69,12 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
             setItemViewCacheSize(100)
         }
 
+    }
+
+    private fun setupListeners() {
+
+        galleryFragOptionsAddPhoto.setOnClickListener { openCamera() }
+        galleryFragOptionsAddFromRoll.setOnClickListener { openChooser() }
     }
 
     private fun openCamera(){
@@ -127,6 +102,4 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
             }
         }
     }
-
-
 }
