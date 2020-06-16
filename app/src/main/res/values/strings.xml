@@ -19,6 +19,6 @@
     <string name="delete_images">Delete images</string>
 
     // Camera
-    <string name="inside_image">Frame must be nside image!</string>
+    <string name="inside_image">Frame must be inside image!</string>
 
 </resources>

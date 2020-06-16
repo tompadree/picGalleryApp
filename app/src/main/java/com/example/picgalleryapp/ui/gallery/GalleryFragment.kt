@@ -45,6 +45,10 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
         super.onResume()
 
         viewModel.refresh()
+
+        viewModel.imageClick.observe(this){
+            it?.let {  openCamera(it) }
+        }
     }
 
     fun setupObservers() {
@@ -73,13 +77,13 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
 
     private fun setupListeners() {
 
-        galleryFragOptionsAddPhoto.setOnClickListener { openCamera() }
+        galleryFragOptionsAddPhoto.setOnClickListener { openCamera("") }
         galleryFragOptionsAddFromRoll.setOnClickListener { openChooser() }
     }
 
-    private fun openCamera(){
+    private fun openCamera(imageUri: String){
         val nc = NavHostFragment.findNavController(this)
-        nc.navigate(GalleryFragmentDirections.actionGalleryFragmentToCameraFragment())
+        nc.navigate(GalleryFragmentDirections.actionGalleryFragmentToCameraFragment(imageUri))
     }
 
     private fun openChooser(){

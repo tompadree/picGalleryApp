@@ -7,7 +7,11 @@
 
         <variable
             name="imageUri"
-            type="com.example.picgalleryapp.data.models.ImageUri" />
+            type="com.example.picgalleryapp.data.models.ImageUri"/>
+
+        <variable
+            name="position"
+            type="Integer"/>
 
         <variable
             name="viewModel"
@@ -35,7 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:keepScreenOn="true"
-                app:imageSourceGallery="@{imageUri.uri}" />
+                app:imageSourceGallery="@{imageUri.uri}"
+                android:onClick="@{() -> viewModel.imageClick(position, imageUri.uri)}"/>
 
         </RelativeLayout>
 

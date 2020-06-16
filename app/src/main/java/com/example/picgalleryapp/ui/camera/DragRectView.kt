@@ -130,12 +130,12 @@ class DragRectView : View {
                 Math.max(mEndY, mStartY).toFloat(),
                 mRectPaint!!
             )
-            canvas.drawText(
-                "  (" + Math.abs(mStartX - mEndX) + ", " + Math.abs(mStartY - mEndY) + ")",
-                Math.max(mEndX, mStartX).toFloat(),
-                Math.max(mEndY, mStartY).toFloat(),
-                mTextPaint!!
-            )
+//            canvas.drawText(
+//                "  (" + Math.abs(mStartX - mEndX) + ", " + Math.abs(mStartY - mEndY) + ")",
+//                Math.max(mEndX, mStartX).toFloat(),
+//                Math.max(mEndY, mStartY).toFloat(),
+//                mTextPaint!!
+//            )
             mCanvas = canvas
         }
     }

@@ -34,6 +34,8 @@ class GalleryViewModel(
 
     private val _page = MutableLiveData<Int>(0)
 
+    val imageClick = SingleLiveEvent<String>()
+
     private val _items: LiveData<List<ImageUri>> =
         _page.switchMap { page ->
             repository.observePictures(page).map {
@@ -82,6 +84,10 @@ class GalleryViewModel(
                 e.printStackTrace()
             }
         }
+    }
+
+    fun imageClick(position: Int, uri: String){
+        imageClick.postValue(uri)
     }
 
 }

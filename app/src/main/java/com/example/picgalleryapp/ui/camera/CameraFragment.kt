@@ -1,6 +1,7 @@
 package com.example.picgalleryapp.ui.camera
 
 import android.graphics.Rect
+import androidx.navigation.fragment.navArgs
 import com.example.picgalleryapp.R
 import com.example.picgalleryapp.databinding.FragmentCameraBinding
 import com.example.picgalleryapp.ui.BindingFragment
@@ -16,11 +17,19 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
 
     private val viewModel: CameraViewModel by viewModel()
 
+    private var imageUri: String = ""
+
+    private val args: CameraFragmentArgs by navArgs()
+
     override fun onViewCreated() {
         super.onViewCreated()
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        if(args.imageUri != ""){
+            viewModel.photoOpened(args.imageUri)
+        }
 
         setupObservers()
         setupCropFrame()
@@ -28,19 +37,19 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
 
     override fun onResume() {
         super.onResume()
-        if (cameraFragmentCamera != null)
+        if (cameraFragmentCamera != null && args.imageUri == "")
             cameraFragmentCamera.open()
     }
 
     override fun onPause() {
         super.onPause()
-        if (cameraFragmentCamera != null)
+        if (cameraFragmentCamera != null  && args.imageUri == "")
             cameraFragmentCamera.close()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (cameraFragmentCamera != null)
+        if (cameraFragmentCamera != null  && args.imageUri == "")
             cameraFragmentCamera.destroy()
     }
 

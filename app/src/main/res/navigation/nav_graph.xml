@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_cameraFragment_to_galleryFragment"
             app:destination="@id/galleryFragment" />
+        <argument
+            android:name="imageUri"
+            app:argType="string" />
     </fragment>
 
 </navigation>

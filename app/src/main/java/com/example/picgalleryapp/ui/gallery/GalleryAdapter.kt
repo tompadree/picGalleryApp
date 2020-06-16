@@ -19,7 +19,7 @@ class GalleryAdapter(
     override fun getItemViewType(position: Int) = position
 
     override fun onBindViewHolder(holder: GalleryImageViewHolder, position: Int) {
-        holder.bind(galleryViewModel, getItem(position))
+        holder.bind(galleryViewModel, getItem(position), position)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryImageViewHolder {
@@ -42,9 +42,10 @@ class GalleryImageViewHolder private constructor(val binding: ItemGalleryBinding
         }
     }
 
-    fun bind(galleryViewModel: GalleryViewModel, uri: ImageUri){
+    fun bind(galleryViewModel: GalleryViewModel, uri: ImageUri, position: Int){
         binding.viewModel = galleryViewModel
         binding.imageUri = uri
+        binding.position = position
         binding.executePendingBindings()
     }
 }

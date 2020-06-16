@@ -2,6 +2,7 @@ package com.example.picgalleryapp.ui.camera
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -40,6 +41,8 @@ class CameraViewModel(
     protected val _error = SingleLiveEvent<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
+    private var modifyMode = false
+
     fun photoTaken(image: PictureResult) {
         isCameraVisible.set(false)
 
@@ -58,12 +61,33 @@ class CameraViewModel(
         }
     }
 
+    fun photoOpened(imageUri: String) {
+        isCameraVisible.set(false)
+        modifyMode = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+//                val file = Glide.with(context).downloadOnly().load(imageUri).submit().get()
+                var file = File(imageUri)
+                val bitmap = ImageHelper.resizeImage(file, 512)
+                photoFile.set(file)
+                photo.set(bitmap)
+                photoCropped.postValue(intArrayOf(bitmap.width, bitmap.height))
+                isCameraVisible.set(false)
+            } catch (e: Exception) {
+                _error.postValue(e)
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun takePhoto(){
         takePhoto.call()
     }
 
     fun saveRetake(save: Boolean) {
-        isCameraVisible.set(!save)
+
+        if(!modifyMode)
+            isCameraVisible.set(!save)
 
         if (save)
             viewModelScope.launch {
@@ -75,8 +99,11 @@ class CameraViewModel(
                 photo.set(null)
                 photoSaved.postValue("")
             }
-        else
+        else if(!modifyMode && !save)
             photoFile.get()?.delete()
+        else if(modifyMode && !save)
+            photoSaved.postValue("")
+
     }
 
     fun rotateImage(){
@@ -90,6 +117,17 @@ class CameraViewModel(
     fun crop(){
         viewModelScope.launch {
             try {
+                var temp = 0
+                if(cropFrame[0] > cropFrame[1]){
+                    temp = cropFrame[0]
+                    cropFrame[0] = cropFrame[1]
+                    cropFrame[1] = temp
+                }
+                if(cropFrame[2] > cropFrame[3]){
+                    temp = cropFrame[2]
+                    cropFrame[2] = cropFrame[3]
+                    cropFrame[3] = temp
+                }
                 val cropWidth = cropFrame[1] - cropFrame[0]
                 val cropHeight = cropFrame[3] - cropFrame[2]
                 val croppedBitmap = Bitmap.createBitmap(
