@@ -35,7 +35,9 @@
             app:destination="@id/galleryFragment" />
         <argument
             android:name="imageUri"
-            app:argType="string" />
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"/>
     </fragment>
 
 </navigation>

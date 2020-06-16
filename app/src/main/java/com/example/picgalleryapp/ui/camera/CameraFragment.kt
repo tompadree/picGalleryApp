@@ -27,8 +27,8 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        if(args.imageUri != ""){
-            viewModel.photoOpened(args.imageUri)
+        if(!args.imageUri.isNullOrEmpty()){
+            viewModel.photoOpened(args.imageUri!!)
         }
 
         setupObservers()
@@ -37,19 +37,19 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
 
     override fun onResume() {
         super.onResume()
-        if (cameraFragmentCamera != null && args.imageUri == "")
+        if (cameraFragmentCamera != null && args.imageUri.isNullOrEmpty())
             cameraFragmentCamera.open()
     }
 
     override fun onPause() {
         super.onPause()
-        if (cameraFragmentCamera != null  && args.imageUri == "")
+        if (cameraFragmentCamera != null  && args.imageUri.isNullOrEmpty())
             cameraFragmentCamera.close()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (cameraFragmentCamera != null  && args.imageUri == "")
+        if (cameraFragmentCamera != null  && args.imageUri.isNullOrEmpty())
             cameraFragmentCamera.destroy()
     }
 

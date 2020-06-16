@@ -7,6 +7,7 @@
     // General
     <string name="no_internet_message">No internet connection. To fetch data, please, connect to the internet.</string>
     <string name="ok">Ok</string>
+    <string name="empty_string"></string>
     <string name="error_default">Something went wrong</string>
     <string name="error_default_db">Something went wrong with database</string>
     <string name="no_internet_connection_title">No internet connection</string>

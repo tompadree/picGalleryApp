@@ -33,7 +33,8 @@ class FakeRepository : PicGalleryRepository {
     }
 
     override suspend fun savePicture(uri: String) {
-        (currentListPics as ArrayList).add(ImageUri((uri)))
+        if(!(currentListPics as ArrayList).contains(ImageUri((uri))))
+            (currentListPics as ArrayList).add(ImageUri((uri)))
     }
 
     override suspend fun fetchPictures(page: Int, per_page: Int): Result<List<ImageUri>> {

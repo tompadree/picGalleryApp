@@ -67,12 +67,11 @@ class CameraViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
 //                val file = Glide.with(context).downloadOnly().load(imageUri).submit().get()
-                var file = File(imageUri)
+                val file = File(imageUri)
                 val bitmap = ImageHelper.resizeImage(file, 512)
                 photoFile.set(file)
                 photo.set(bitmap)
                 photoCropped.postValue(intArrayOf(bitmap.width, bitmap.height))
-                isCameraVisible.set(false)
             } catch (e: Exception) {
                 _error.postValue(e)
                 e.printStackTrace()
