@@ -1,25 +1,23 @@
 package com.example.picgalleryapp
 
+import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.SystemClock
 import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.example.picgalleryapp.data.models.Result
 import com.example.picgalleryapp.data.source.FakeRepository
 import com.example.picgalleryapp.data.source.PicGalleryRepository
@@ -27,24 +25,26 @@ import com.example.picgalleryapp.ui.PicGalleryActivity
 import com.example.picgalleryapp.ui.camera.CameraViewModel
 import com.example.picgalleryapp.ui.gallery.GalleryImageViewHolder
 import com.example.picgalleryapp.ui.gallery.GalleryViewModel
-import com.example.picgalleryapp.util.CameraIdlingResource
+import com.example.picgalleryapp.util.ViewIdlingResource
 import com.example.picgalleryapp.util.DataBindingIdlingResource
 import com.example.picgalleryapp.util.monitorActivity
 import com.example.picgalleryapp.utils.EspressoIdlingResource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.hamcrest.BaseMatcher
-import org.hamcrest.CoreMatchers
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.junit.Assert
+import java.util.concurrent.TimeUnit
+
 
 /**
  * @author Tomislav Curis
@@ -73,7 +73,7 @@ class PicGalleryActivityTest : KoinTest {
         repository = FakeRepository()
 
         val application =
-            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApp
+            getInstrumentation().targetContext.applicationContext as TestApp
         application.injectModule(module {
             single(override = true) { repository }
         })
@@ -89,9 +89,29 @@ class PicGalleryActivityTest : KoinTest {
         }
     }
 
-    // Register IdlingResource
+    // Camera permission
+    @Before
+    fun cameraPermissionInit(){
+
+        val permissions: ArrayList<String> = ArrayList()
+        permissions.add(Manifest.permission.CAMERA)
+
+        for (i in 0 until permissions.size) {
+            val command = java.lang.String.format(
+                "pm grant %s %s",
+                getInstrumentation().targetContext.packageName,
+                permissions[i]
+            )
+            getInstrumentation().uiAutomation.executeShellCommand(command)
+            // wait a bit until the command is finished
+            SystemClock.sleep(1000)
+        }
+    }
+
+    // Register general IdlingResource
     @Before
     fun registerIdlingResource() {
+        IdlingPolicies.setIdlingResourceTimeout(1, TimeUnit.MINUTES)
         IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().register(dataBindingIdlingResource)
     }
@@ -134,18 +154,19 @@ class PicGalleryActivityTest : KoinTest {
         onView(withId(R.id.cameraFragmentTakeShotButton)).perform(click())
 
         val matcher = withId(R.id.cameraFragmentPreviewLayout)
-        val resource = CameraIdlingResource(matcher)
-        IdlingRegistry.getInstance().register(resource)
+        val resource = ViewIdlingResource(matcher, isDisplayed())
+        try {
+            IdlingRegistry.getInstance().register(resource)
+            onView(matcher).check(matches(isDisplayed()))
 
-        onView(matcher).check(matches(isDisplayed()))
-
-        IdlingRegistry.getInstance().unregister(resource)
+        } finally {
+            IdlingRegistry.getInstance().unregister(resource)
+        }
 
         // Take photo
         onView(withId(R.id.cameraFragmentConfirmButton)).perform(click())
 
         val pics = runBlocking {
-//            repository.savePicture("UriTest")
             (repository.fetchPictures(0, 30) as Result.Success).data
         }
 
@@ -208,12 +229,14 @@ class PicGalleryActivityTest : KoinTest {
 
         // Idle
         val matcher = withId(R.id.cameraFragmentPreviewLayout)
-        val resource = CameraIdlingResource(matcher)
-        IdlingRegistry.getInstance().register(resource)
+        val resource = ViewIdlingResource(matcher, isDisplayed())
+        try {
+            IdlingRegistry.getInstance().register(resource)
+            onView(matcher).check(matches(isDisplayed()))
 
-        onView(matcher).check(matches(isDisplayed()))
-
-        IdlingRegistry.getInstance().unregister(resource)
+        } finally {
+            IdlingRegistry.getInstance().unregister(resource)
+        }
 
         // Save photo
         onView(withId(R.id.cameraFragmentConfirmButton)).perform(click())
@@ -225,15 +248,31 @@ class PicGalleryActivityTest : KoinTest {
         // Check if image exist after adding
         Assert.assertEquals(pics.size, 2)
 
+        // Idle
+        val matcher3 = withId(R.id.cameraFragmentPreviewLayout)
+        val resource3 = ViewIdlingResource(matcher3, isDisplayed())
+        try {
+            IdlingRegistry.getInstance().register(resource3)
+            onView(matcher3).check(matches(isDisplayed()))
+
+        } finally {
+            IdlingRegistry.getInstance().unregister(resource3)
+        }
+
         // Click photo
+//        onView(withId(R.id.galleryFragRv)).check(matches(RecyclerViewActions.actionOnItemAtPosition<GalleryImageViewHolder>(0)))
         onView(withId(R.id.galleryFragRv)).perform(RecyclerViewActions.actionOnItemAtPosition<GalleryImageViewHolder>(1, click()))
 
-        // Idle
-        IdlingRegistry.getInstance().register(resource)
+        // Check again idle for R.id.cameraFragmentPreviewLayout
+        val matcher2 = withId(R.id.cameraFragmentPreviewLayout)
+        val resource2 = ViewIdlingResource(matcher2, isDisplayed())
+        try {
+            IdlingRegistry.getInstance().register(resource2)
+            onView(matcher2).check(matches(isDisplayed()))
 
-        onView(matcher).check(matches(isDisplayed()))
-
-        IdlingRegistry.getInstance().unregister(resource)
+        } finally {
+            IdlingRegistry.getInstance().unregister(resource2)
+        }
 
         // Rotate image
         onView(withId(R.id.cameraFragmentRotateButton)).perform(click())
@@ -258,6 +297,7 @@ class PicGalleryActivityTest : KoinTest {
         Assert.assertEquals(picsAfterDelete.size, 0)
     }
 
+
     private fun <T> customMatcherForDrawable(imageId: Int): Matcher<T> {
 
         return object : BaseMatcher<T>() {
@@ -276,13 +316,13 @@ class PicGalleryActivityTest : KoinTest {
 
             fun getBitmap(drawable: Drawable): Bitmap {
                 val bitmap = Bitmap.createBitmap(
-                    drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888
-                );
-                val canvas = Canvas(bitmap);
-                drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-                drawable.draw(canvas);
-                return bitmap;
+                    drawable.intrinsicWidth,
+                    drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
+                )
+                val canvas = Canvas(bitmap)
+                drawable.setBounds(0, 0, canvas.width, canvas.height)
+                drawable.draw(canvas)
+                return bitmap
             }
 
         }

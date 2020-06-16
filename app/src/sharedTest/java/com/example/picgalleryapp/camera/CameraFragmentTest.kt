@@ -1,7 +1,6 @@
 package com.example.picgalleryapp.camera
 
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -21,7 +20,7 @@ import com.example.picgalleryapp.data.source.FakeRepository
 import com.example.picgalleryapp.data.source.PicGalleryRepository
 import com.example.picgalleryapp.ui.camera.CameraFragment
 import com.example.picgalleryapp.ui.camera.CameraViewModel
-import com.example.picgalleryapp.util.CameraIdlingResource
+import com.example.picgalleryapp.util.ViewIdlingResource
 import com.example.picgalleryapp.util.DataBindingIdlingResource
 import com.example.picgalleryapp.utils.EspressoIdlingResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,7 +35,6 @@ import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.mockito.Mockito
-import java.util.regex.Matcher
 import com.google.common.truth.Truth.*
 
 /**
@@ -98,13 +96,17 @@ class CameraFragmentTest : KoinTest {
         onView(withId(R.id.cameraFragmentTakeShotButton)).perform(click())
 
         val matcher = withId(R.id.cameraFragmentPreviewLayout)
-        val resource = CameraIdlingResource(matcher)
-        IdlingRegistry.getInstance().register(resource)
+        val resource = ViewIdlingResource(matcher, isDisplayed())
+        try {
+            IdlingRegistry.getInstance().register(resource)
+            onView(matcher).check(matches(isDisplayed()))
 
-        onView(matcher).check(matches(isDisplayed()))
+        } finally {
+            IdlingRegistry.getInstance().unregister(resource)
+        }
+
         onView(withId(R.id.cameraFragmentRotateButton)).check(matches(isDisplayed()))
 
-        IdlingRegistry.getInstance().unregister(resource)
 
     }
 
@@ -118,12 +120,14 @@ class CameraFragmentTest : KoinTest {
         onView(withId(R.id.cameraFragmentTakeShotButton)).perform(click())
 
         val matcher = withId(R.id.cameraFragmentPreviewLayout)
-        val resource = CameraIdlingResource(matcher)
-        IdlingRegistry.getInstance().register(resource)
+        val resource = ViewIdlingResource(matcher, isDisplayed())
+        try {
+            IdlingRegistry.getInstance().register(resource)
+            onView(matcher).check(matches(isDisplayed()))
 
-        onView(matcher).check(matches(isDisplayed()))
-
-        IdlingRegistry.getInstance().unregister(resource)
+        } finally {
+            IdlingRegistry.getInstance().unregister(resource)
+        }
 
         // Take photo
         onView(withId(R.id.cameraFragmentConfirmButton)).perform(click())
@@ -156,14 +160,14 @@ class CameraFragmentTest : KoinTest {
         onView(withId(R.id.cameraFragmentTakeShotButton)).perform(click())
 
         val matcher = withId(R.id.cameraFragmentPreviewLayout)
-        val resource = CameraIdlingResource(matcher)
+        val resource = ViewIdlingResource(matcher, isDisplayed())
         IdlingRegistry.getInstance().register(resource)
 
         onView(matcher).check(matches(isDisplayed()))
 
         IdlingRegistry.getInstance().unregister(resource)
 
-        // Take photo
+        // Confirm photo
         onView(withId(R.id.cameraFragmentConfirmButton)).perform(click())
 
 
@@ -187,6 +191,4 @@ class CameraFragmentTest : KoinTest {
             Navigation.setViewNavController(it.view!!, navController)
         }
     }
-
-
 }

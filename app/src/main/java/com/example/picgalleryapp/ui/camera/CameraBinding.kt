@@ -1,16 +1,11 @@
 package com.example.picgalleryapp.ui.camera
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.bumptech.glide.Glide
-import com.example.picgalleryapp.utils.helpers.ImageHelper
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
-import java.io.File
 
 /**
  * @author Tomislav Curis

@@ -22,7 +22,7 @@ interface PicGalleryDAO {
     fun observeUris(page: Int, per_page: Int): LiveData<List<ImageUri>>
 
     /**
-     * Delete all repos.
+     * Delete all uris.
      */
     @Query("DELETE FROM uris")
     suspend fun deletePictures()

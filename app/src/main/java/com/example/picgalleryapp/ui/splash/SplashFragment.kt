@@ -8,10 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.NavHostFragment
 import com.example.picgalleryapp.R
-import com.example.picgalleryapp.utils.AppConstants
 import com.example.picgalleryapp.utils.helpers.delay
 
 class SplashFragment : Fragment() {
+
+    private val SPLASH_DISPLAY_LENGTH: Long = 2000
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,7 +28,7 @@ class SplashFragment : Fragment() {
     }
 
     private fun launchCurrencies() {
-        delay(AppConstants.SPLASH_DISPLAY_LENGTH) {
+        delay(SPLASH_DISPLAY_LENGTH) {
             navigateToGallery()
         }
     }

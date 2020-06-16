@@ -19,7 +19,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import com.google.common.truth.Truth.assertThat
 import org.hamcrest.CoreMatchers.`is`
 import com.example.picgalleryapp.data.models.Result.Success
-import com.example.picgalleryapp.data.models.Result.Error
 
 /**
  * @author Tomislav Curis
@@ -80,7 +79,7 @@ class PicGalleryLocalDataSourceTest {
         localDataSource.savePicture(imageUri2.uri)
         localDataSource.savePicture(imageUri3.uri)
 
-        // Delete ratesObject
+        // Delete pictures
         localDataSource.deletePics()
 
         // retrieve list

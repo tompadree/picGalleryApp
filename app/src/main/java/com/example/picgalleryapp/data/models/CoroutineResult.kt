@@ -2,10 +2,6 @@ package com.example.picgalleryapp.data.models
 
 /**
  * @author Tomislav Curis
- */
-
-/**
- * @author Tomislav Curis
  *
  * A generic class that holds a value with its loading status.
  * @param <T>

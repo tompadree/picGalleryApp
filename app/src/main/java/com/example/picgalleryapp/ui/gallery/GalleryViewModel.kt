@@ -10,12 +10,9 @@ import com.example.picgalleryapp.data.source.PicGalleryRepository
 import com.example.picgalleryapp.utils.SingleLiveEvent
 import com.example.picgalleryapp.data.models.Result.Success
 import com.example.picgalleryapp.utils.helpers.ImageHelper
-import com.otaliastudios.cameraview.PictureResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
-import java.lang.Error
 import java.lang.Exception
 
 /**

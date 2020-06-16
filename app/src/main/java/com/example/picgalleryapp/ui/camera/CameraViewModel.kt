@@ -90,17 +90,25 @@ class CameraViewModel(
 
         if (save)
             viewModelScope.launch {
-                photoFile.get()?.outputStream().use {
-                    photo.get()?.compress(Bitmap.CompressFormat.JPEG, 90, it)
+                try {
+                    photoFile.get()?.outputStream().use {
+                        photo.get()?.compress(Bitmap.CompressFormat.JPEG, 90, it)
+                    }
+                    repository.savePicture(photoFile.get().toString())
+                    photoFile.set(null)
+                    photo.set(null)
+                    photoSaved.postValue("")
+                } catch (e: Exception) {
+                    _error.postValue(e)
+                    e.printStackTrace()
                 }
-                repository.savePicture(photoFile.get().toString())
-                photoFile.set(null)
-                photo.set(null)
-                photoSaved.postValue("")
             }
-        else if(!modifyMode && !save)
-            photoFile.get()?.delete()
-        else if(modifyMode && !save)
+        else if(!modifyMode && !save) {
+            if(photoFile.get()?.exists()!!) {
+                photoFile.get()!!.delete()
+                photoFile.set(null)
+            }
+        }else if(modifyMode && !save)
             photoSaved.postValue("")
 
     }

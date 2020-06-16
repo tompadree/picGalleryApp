@@ -1,6 +1,11 @@
 package com.example.picgalleryapp.ui.camera
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.navArgs
 import com.example.picgalleryapp.R
 import com.example.picgalleryapp.databinding.FragmentCameraBinding
@@ -16,8 +21,6 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
     override val layoutId = R.layout.fragment_camera
 
     private val viewModel: CameraViewModel by viewModel()
-
-    private var imageUri: String = ""
 
     private val args: CameraFragmentArgs by navArgs()
 
@@ -70,7 +73,7 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
         }
 
         viewModel.photoSaved.observe(this) {
-            activity?.onBackPressed()
+            onBackPressed()
         }
 
         viewModel.photoCropped.observe(this) {
@@ -83,5 +86,9 @@ class CameraFragment : BindingFragment<FragmentCameraBinding>() {
                 galleryFragSwipeLayout.isRefreshing = it
             }
         }
+    }
+
+    private fun onBackPressed() {
+        activity?.onBackPressed()
     }
 }

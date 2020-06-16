@@ -1,7 +1,6 @@
 package com.example.picgalleryapp.data.source
 
 import com.example.picgalleryapp.data.models.ImageUri
-import com.example.picgalleryapp.data.source.local.PicGalleryLocalDataSource
 import com.example.picgalleryapp.util.MainCoroutineRule
 import com.google.common.truth.Truth.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi

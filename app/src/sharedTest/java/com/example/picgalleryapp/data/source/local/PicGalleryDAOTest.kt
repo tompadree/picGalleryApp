@@ -3,14 +3,12 @@ package com.example.picgalleryapp.data.source.local
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.filters.SmallTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.picgalleryapp.data.models.ImageUri
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
@@ -73,7 +71,7 @@ class PicGalleryDAOTest {
         picGalleryDAO.savePic(imageUri2)
         picGalleryDAO.savePic(imageUri3)
 
-        // Delete ratesObject
+        // Delete pictures
         picGalleryDAO.deletePictures()
 
         // retrieve list

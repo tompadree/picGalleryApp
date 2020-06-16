@@ -1,9 +1,6 @@
 package com.example.picgalleryapp.utils.helpers
 
-
-
 import android.os.Handler
-import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer

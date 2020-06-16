@@ -5,19 +5,12 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -30,20 +23,15 @@ import com.example.picgalleryapp.data.models.Result
 import com.example.picgalleryapp.data.source.FakeRepository
 import com.example.picgalleryapp.data.source.PicGalleryRepository
 import com.example.picgalleryapp.ui.gallery.GalleryFragment
-import com.example.picgalleryapp.ui.gallery.GalleryViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.*
-import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers.allOf
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.dsl.module
 import org.koin.test.KoinTest
-import org.koin.test.inject
 import org.mockito.Mockito
 
 /**
@@ -80,8 +68,6 @@ class GalleryFragmentTest : KoinTest{
             val uri = Uri.parse("android.resource://com.example.picgalleryapp/drawable/test_image").toString()
 
             repository.savePicture(uri)
-//            repository.savePicture(uri)
-//            repository.savePicture(uri)
         }
     }
 
@@ -157,6 +143,7 @@ class GalleryFragmentTest : KoinTest{
         Assert.assertEquals(pics[0].uri, "android.resource://com.example.picgalleryapp/drawable/test_image")
         Assert.assertEquals(pics[1].uri, "UriTest")
     }
+
 
     // https://medium.com/@dbottillo/android-ui-test-espresso-matcher-for-imageview-1a28c832626f
     private fun <T> customMatcherForDrawable(imageId: Int): Matcher<T> {

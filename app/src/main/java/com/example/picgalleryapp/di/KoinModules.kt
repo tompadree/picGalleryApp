@@ -2,8 +2,6 @@ package com.example.picgalleryapp.di
 
 import androidx.fragment.app.FragmentActivity
 import androidx.room.Room
-import com.bumptech.glide.Glide
-import com.bumptech.glide.GlideBuilder
 import com.example.picgalleryapp.data.source.PicGalleryDataSource
 import com.example.picgalleryapp.data.source.PicGalleryRepository
 import com.example.picgalleryapp.data.source.PicGalleryRepositoryImpl
@@ -25,6 +23,7 @@ import org.koin.dsl.module
 val AppModule = module {
     factory { (activity: FragmentActivity) -> DialogManagerImpl(activity) as DialogManager }
 }
+
 val DataModule = module {
 
     single {

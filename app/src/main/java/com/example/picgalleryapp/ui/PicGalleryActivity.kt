@@ -8,6 +8,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.picgalleryapp.R
 
+/**
+ * @author Tomislav Curis
+ */
 class PicGalleryActivity : AppCompatActivity() {
 
     private val onDestinationChangedListener = this@PicGalleryActivity::onDestinationChanged

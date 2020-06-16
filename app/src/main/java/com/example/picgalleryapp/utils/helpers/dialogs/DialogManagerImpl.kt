@@ -55,6 +55,33 @@ class DialogManagerImpl(val activity: FragmentActivity) : DialogManager {
         )
     }
 
+    override fun openTwoButtonsDialog(
+        titleText: String?,
+        messageText: String?,
+        positiveButtonName: String,
+        negativeButtonName: String,
+        cancelable: Boolean,
+        onPositiveButtonClick: (() -> Unit)?,
+        onNegativeButtonClick: (() -> Unit)?
+    ) {
+        val builder = AlertDialog.Builder(activity)
+            .setPositiveButton(positiveButtonName) { dialog, _ ->
+                dialog.dismiss()
+                onPositiveButtonClick?.invoke()
+            }
+            .setNegativeButton(negativeButtonName) { dialog, _ ->
+                dialog.dismiss()
+                onNegativeButtonClick?.invoke()
+            }
+            .setCancelable(cancelable)
+        titleText?.let { builder.setTitle(it) }
+        messageText?.let { builder.setMessage(it) }
+        val dialog = builder.create()
+
+        putToShowedDialogsList(dialog)
+        dialog.show()
+    }
+
     private fun openOneButtonDialogInternal(
         buttonTextId: Int,
         title: String?,

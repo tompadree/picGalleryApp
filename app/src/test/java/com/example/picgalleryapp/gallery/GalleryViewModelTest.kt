@@ -1,10 +1,7 @@
 package com.example.picgalleryapp.gallery
 
-import android.app.Application
 import android.content.Context
-import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
 import com.example.picgalleryapp.data.models.ImageUri
 import com.example.picgalleryapp.data.source.FakeRepository
 import com.example.picgalleryapp.di.AppModule
@@ -23,10 +20,7 @@ import org.koin.test.inject
 import com.google.common.truth.Truth.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.runner.RunWith
-import org.koin.core.KoinApplication
-import org.koin.core.context.KoinContext
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 
 /**

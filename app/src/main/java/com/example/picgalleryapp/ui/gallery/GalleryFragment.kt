@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -17,7 +16,7 @@ import java.io.IOException
 
 
 /**
- * A simple [Fragment] subclass.
+ * @author Tomislav Curis
  */
 class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
 
@@ -82,8 +81,18 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
     }
 
     private fun openCamera(imageUri: String){
-        val nc = NavHostFragment.findNavController(this)
-        nc.navigate(GalleryFragmentDirections.actionGalleryFragmentToCameraFragment(imageUri))
+
+        if (imageUri != "") {
+            val nc = NavHostFragment.findNavController(this)
+            nc.navigate(GalleryFragmentDirections.actionGalleryFragmentToCameraFragment(imageUri))
+        } else activity?.let {
+            if (!permissionGranted()) {
+                showPermissionDialog()
+            } else {
+                val nc = NavHostFragment.findNavController(this)
+                nc.navigate(GalleryFragmentDirections.actionGalleryFragmentToCameraFragment(imageUri))
+            }
+        }
     }
 
     private fun openChooser(){

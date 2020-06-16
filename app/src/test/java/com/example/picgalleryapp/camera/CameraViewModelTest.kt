@@ -1,9 +1,7 @@
 package com.example.picgalleryapp.camera
 
-import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
 import com.example.picgalleryapp.data.source.FakeRepository
 import com.example.picgalleryapp.di.AppModule
 import com.example.picgalleryapp.di.DataModule
@@ -20,9 +18,6 @@ import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
 import org.koin.test.inject
 import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.mock
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import java.io.File
 
@@ -89,43 +84,30 @@ class CameraViewModelTest : KoinTest {
         // Photo is set null after saving
         assertThat(cameraViewModel.photoFile.get()).isNull()
     }
+
+
+    @Test
+    fun saveImageRetake() {
+        // Pause dispatcher so we can verify initial values
+        mainCoroutineRule.pauseDispatcher()
+
+
+        // Set photo observable
+        cameraViewModel.photoFile.set(
+            File.createTempFile(
+                "/data/user/0/com.example.picgalleryapp/cache/image_manager_disk_cache/bd74a2e2b3f9c627dedc0d88a0dad5c9936406802a73c63516ca35492a6612c3",
+                ".0"
+            )
+        )
+
+        // Trigger saving of image
+        cameraViewModel.saveRetake(false)
+
+        // Execute pending coroutines actions
+        mainCoroutineRule.resumeDispatcher()
+
+        // Photo is set null after saving
+        assertThat(cameraViewModel.photoFile.get()).isNull()
+
+    }
 }
-
-//    @Test
-//    fun saveImageGetError() {
-//        // Pause dispatcher so we can verify initial values
-//        mainCoroutineRule.pauseDispatcher()
-//
-//        // Set images return error
-//        repository.setReturnError(true)
-//
-//        // Set photo observable
-//        cameraViewModel.photoFile.set(
-//            File.createTempFile(
-//                "/data/user/0/com.example.picgalleryapp/cache/image_manager_disk_cache/bd74a2e2b3f9c627dedc0d88a0dad5c9936406802a73c63516ca35492a6612c3", ".0"))
-//
-//        // Trigger saving of image
-//        cameraViewModel.saveRetake(true)
-//
-//        // Execute pending coroutines actions
-//        mainCoroutineRule.resumeDispatcher()
-//
-//        assertThat(cameraViewModel.error.value).isInstanceOf(Exception::class.java)
-
-//        // Loading
-//        Truth.assertThat(galleryViewModel.dataLoading.getOrAwaitValue()).isTrue()
-//
-//        // Observe the items to keep LiveData emitting
-//        galleryViewModel.items.observeForTesting {
-//
-//            // Execute pending coroutines actions
-//            mainCoroutineRule.resumeDispatcher()
-//
-//            // loading is done
-//            Truth.assertThat(galleryViewModel.dataLoading.getOrAwaitValue()).isFalse()
-//
-//            // If isDataLoadingError response was error
-//            Truth.assertThat(galleryViewModel.error.value).isInstanceOf(Exception::class.java)
-//        }
-//    }
-//}
