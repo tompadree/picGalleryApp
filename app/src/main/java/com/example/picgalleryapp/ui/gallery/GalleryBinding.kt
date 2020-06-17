@@ -9,7 +9,6 @@ import com.example.picgalleryapp.data.models.ImageUri
 /**
  * @author Tomislav Curis
  */
-
 @BindingAdapter("app:items")
 fun setItems(listView: RecyclerView, items: List<ImageUri>?) {
     if(items == null) return

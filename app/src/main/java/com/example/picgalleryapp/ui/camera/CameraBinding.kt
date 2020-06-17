@@ -10,7 +10,6 @@ import com.otaliastudios.cameraview.PictureResult
 /**
  * @author Tomislav Curis
  */
-
 @BindingAdapter("app:imageSource")
 fun setImagePreview(imageView: ImageView, image: Bitmap?){
 

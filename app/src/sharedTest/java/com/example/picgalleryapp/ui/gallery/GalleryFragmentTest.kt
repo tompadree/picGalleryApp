@@ -1,10 +1,12 @@
-package com.example.picgalleryapp.gallery
+package com.example.picgalleryapp.ui.gallery
 
+import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.SystemClock
 import android.widget.ImageView
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
@@ -22,7 +24,6 @@ import com.example.picgalleryapp.data.models.ImageUri
 import com.example.picgalleryapp.data.models.Result
 import com.example.picgalleryapp.data.source.FakeRepository
 import com.example.picgalleryapp.data.source.PicGalleryRepository
-import com.example.picgalleryapp.ui.gallery.GalleryFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.*
@@ -43,13 +44,8 @@ import org.mockito.Mockito
 @ExperimentalCoroutinesApi
 class GalleryFragmentTest : KoinTest{
 
-
     // Use a fake repository to be injected
     private lateinit var repository: PicGalleryRepository
-
-    private val imageUri = ImageUri("Uri1")
-    private val imageUri2 = ImageUri("Uri2")
-    private val imageUri3 = ImageUri("Uri3")
 
     @Before
     fun initRepo() {
@@ -68,6 +64,25 @@ class GalleryFragmentTest : KoinTest{
             val uri = Uri.parse("android.resource://com.example.picgalleryapp/drawable/test_image").toString()
 
             repository.savePicture(uri)
+        }
+    }
+
+    // Camera permission
+    @Before
+    fun cameraPermissionInit(){
+
+        val permissions: ArrayList<String> = ArrayList()
+        permissions.add(Manifest.permission.CAMERA)
+
+        for (i in 0 until permissions.size) {
+            val command = java.lang.String.format(
+                "pm grant %s %s",
+                InstrumentationRegistry.getInstrumentation().targetContext.packageName,
+                permissions[i]
+            )
+            InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(command)
+            // wait a bit until the command is finished
+            SystemClock.sleep(1000)
         }
     }
 

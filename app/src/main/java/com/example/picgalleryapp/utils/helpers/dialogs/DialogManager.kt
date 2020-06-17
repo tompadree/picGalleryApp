@@ -19,13 +19,13 @@ interface DialogManager {
         onClickOk: (() -> Unit)? = null
     )
 
-    fun openOneButtonDialog(
-        buttonTextId: Int = R.string.ok,
-        titleId: Int,
-        messageId: Int,
-        cancelable: Boolean = false,
-        onClickOk: (() -> Unit)? = null
-    )
+//    fun openOneButtonDialog(
+//        buttonTextId: Int = R.string.ok,
+//        titleId: Int,
+//        messageId: Int,
+//        cancelable: Boolean = false,
+//        onClickOk: (() -> Unit)? = null
+//    )
 
     fun openOneButtonDialog(
         buttonTextId: Int = R.string.ok,

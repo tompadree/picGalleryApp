@@ -66,7 +66,6 @@ class CameraViewModel(
         modifyMode = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-//                val file = Glide.with(context).downloadOnly().load(imageUri).submit().get()
                 val file = File(imageUri)
                 val bitmap = ImageHelper.resizeImage(file, 512)
                 photoFile.set(file)
@@ -113,11 +112,16 @@ class CameraViewModel(
 
     }
 
-    fun rotateImage(){
-        photo.get()?.let {
-            val bitmap = ImageHelper.setOrientation(it, 90)
-            photo.set(bitmap)
-            photoCropped.postValue(intArrayOf(bitmap!!.width, bitmap.height))
+    fun rotateImage() {
+        try {
+            photo.get()?.let {
+                val bitmap = ImageHelper.setOrientation(it, 90)
+                photo.set(bitmap)
+                photoCropped.postValue(intArrayOf(bitmap!!.width, bitmap.height))
+            }
+        } catch (e: Exception) {
+            _error.postValue(e)
+            e.printStackTrace()
         }
     }
 

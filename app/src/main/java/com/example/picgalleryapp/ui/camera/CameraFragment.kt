@@ -1,11 +1,6 @@
 package com.example.picgalleryapp.ui.camera
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.graphics.Rect
-import android.util.Log
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.navArgs
 import com.example.picgalleryapp.R
 import com.example.picgalleryapp.databinding.FragmentCameraBinding
@@ -15,7 +10,9 @@ import kotlinx.android.synthetic.main.fragment_gallery.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.picgalleryapp.utils.helpers.observe
 
-
+/**
+ * @author Tomislav Curis
+ */
 class CameraFragment : BindingFragment<FragmentCameraBinding>() {
 
     override val layoutId = R.layout.fragment_camera

@@ -1,4 +1,4 @@
-package com.example.picgalleryapp.gallery
+package com.example.picgalleryapp.ui.gallery
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -8,7 +8,6 @@ import com.example.picgalleryapp.di.AppModule
 import com.example.picgalleryapp.di.DataModule
 import com.example.picgalleryapp.getOrAwaitValue
 import com.example.picgalleryapp.observeForTesting
-import com.example.picgalleryapp.ui.gallery.GalleryViewModel
 import com.example.picgalleryapp.util.MainCoroutineRule
 import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
@@ -37,8 +36,6 @@ class GalleryViewModelTest : KoinTest {
     // Use a fake repository to be injected into the viewmodel
     private lateinit var repository: FakeRepository
 
-    val dispatchers: CoroutineDispatcher by inject()
-
     // Rule for koin injection
     @get:Rule
     val koinTestRule = KoinTestRule.create {
@@ -66,7 +63,7 @@ class GalleryViewModelTest : KoinTest {
 
         repository.currentListPics = mutableListOf(imageUri, imageUri2, imageUri3)
 
-        galleryViewModel = GalleryViewModel(mockContext, repository, dispatchers)
+        galleryViewModel = GalleryViewModel(mockContext, repository)
     }
 
     @Test

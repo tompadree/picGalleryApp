@@ -1,4 +1,4 @@
-package com.example.picgalleryapp
+package com.example.picgalleryapp.ui
 
 import android.Manifest
 import android.graphics.Bitmap
@@ -6,10 +6,10 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.SystemClock
+import android.util.Log
 import android.widget.ImageView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -18,10 +18,11 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import com.example.picgalleryapp.R
+import com.example.picgalleryapp.TestApp
 import com.example.picgalleryapp.data.models.Result
 import com.example.picgalleryapp.data.source.FakeRepository
 import com.example.picgalleryapp.data.source.PicGalleryRepository
-import com.example.picgalleryapp.ui.PicGalleryActivity
 import com.example.picgalleryapp.ui.camera.CameraViewModel
 import com.example.picgalleryapp.ui.gallery.GalleryImageViewHolder
 import com.example.picgalleryapp.ui.gallery.GalleryViewModel
@@ -43,7 +44,6 @@ import org.junit.runner.RunWith
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.inject
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -111,7 +111,6 @@ class PicGalleryActivityTest : KoinTest {
     // Register general IdlingResource
     @Before
     fun registerIdlingResource() {
-        IdlingPolicies.setIdlingResourceTimeout(1, TimeUnit.MINUTES)
         IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().register(dataBindingIdlingResource)
     }
@@ -131,56 +130,12 @@ class PicGalleryActivityTest : KoinTest {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         // THEN - Verify image is displayed on screen
-        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(R.drawable.test_image)))
+        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(
+            R.drawable.test_image
+        )))
 
-    }
-
-
-    @Test
-    fun takePhotoAndDelete(){
-        // Start up Activity screen and start monitor
-        val activityScenario = ActivityScenario.launch(PicGalleryActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-
-        // THEN - Verify image is displayed on screen
-        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(R.drawable.test_image)))
-
-        onView(withText(R.string.take_photo)).perform(click())
-
-        // Flag for camera set
-        assertThat(cameraViewModel.isCameraVisible.get(), CoreMatchers.`is`(true))
-
-        // Take photo
-        onView(withId(R.id.cameraFragmentTakeShotButton)).perform(click())
-
-        val matcher = withId(R.id.cameraFragmentPreviewLayout)
-        val resource = ViewIdlingResource(matcher, isDisplayed())
-        try {
-            IdlingRegistry.getInstance().register(resource)
-            onView(matcher).check(matches(isDisplayed()))
-
-        } finally {
-            IdlingRegistry.getInstance().unregister(resource)
-        }
-
-        // Take photo
-        onView(withId(R.id.cameraFragmentConfirmButton)).perform(click())
-
-        val pics = runBlocking {
-            (repository.fetchPictures(0, 30) as Result.Success).data
-        }
-
-        // Check if images exist after adding
-        Assert.assertEquals(pics.size, 2)
-        Assert.assertEquals(pics[0].uri, "android.resource://com.example.picgalleryapp/drawable/test_image")
-
-        onView(withText(R.string.delete_images)).perform(click())
-
-        // Check if image exist
-        val picsAfterDelete = runBlocking {
-            (repository.fetchPictures(0, 30) as Result.Success).data
-        }
-        Assert.assertEquals(picsAfterDelete.size, 0)
+        // Make sure the activity is closed
+        activityScenario.close()
     }
 
     @Test
@@ -190,7 +145,9 @@ class PicGalleryActivityTest : KoinTest {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         // THEN - Verify image is displayed on screen
-        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(R.drawable.test_image)))
+        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(
+            R.drawable.test_image
+        )))
 
         val pics = runBlocking {
             repository.savePicture("android.resource://com.example.picgalleryapp/drawable/test_image_2")
@@ -201,6 +158,8 @@ class PicGalleryActivityTest : KoinTest {
         Assert.assertEquals(pics.size, 2)
         Assert.assertEquals(pics[0].uri, "android.resource://com.example.picgalleryapp/drawable/test_image")
 
+        Log.e("SecondUri", pics[1].uri)
+
         onView(withText(R.string.delete_images)).perform(click())
 
         // Check if image exist
@@ -208,16 +167,21 @@ class PicGalleryActivityTest : KoinTest {
             (repository.fetchPictures(0, 30) as Result.Success).data
         }
         Assert.assertEquals(picsAfterDelete.size, 0)
+
+        // Make sure the activity is closed
+        activityScenario.close()
     }
 
     @Test
-    fun takePhotoClickImageForEditRotateSaveAndDelete(){
+    fun takePhotoAndDelete(){
         // Start up Activity screen and start monitor
         val activityScenario = ActivityScenario.launch(PicGalleryActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         // THEN - Verify image is displayed on screen
-        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(R.drawable.test_image)))
+        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(
+            R.drawable.test_image
+        )))
 
         onView(withText(R.string.take_photo)).perform(click())
 
@@ -227,7 +191,6 @@ class PicGalleryActivityTest : KoinTest {
         // Take photo
         onView(withId(R.id.cameraFragmentTakeShotButton)).perform(click())
 
-        // Idle
         val matcher = withId(R.id.cameraFragmentPreviewLayout)
         val resource = ViewIdlingResource(matcher, isDisplayed())
         try {
@@ -238,38 +201,94 @@ class PicGalleryActivityTest : KoinTest {
             IdlingRegistry.getInstance().unregister(resource)
         }
 
-        // Save photo
+        // Rotate image
+        onView(withId(R.id.cameraFragmentRotateButton)).perform(click())
+
+        // Take photo
+        onView(withId(R.id.cameraFragmentConfirmButton)).perform(click())
+
+        val pics = runBlocking {
+            (repository.fetchPictures(0, 30) as Result.Success).data
+        }
+
+        // Check if images exist after adding
+        Assert.assertEquals(pics.size, 2)
+        Assert.assertEquals(pics[0].uri, "android.resource://com.example.picgalleryapp/drawable/test_image")
+
+        onView(withText(R.string.delete_images)).perform(click())
+
+        // Check if image exist
+        val picsAfterDelete = runBlocking {
+            (repository.fetchPictures(0, 30) as Result.Success).data
+        }
+        Assert.assertEquals(picsAfterDelete.size, 0)
+
+        // Make sure the activity is closed
+        activityScenario.close()
+    }
+
+    @Test
+    fun takePhotoClickImageForEditRotateSaveAndDelete(){
+        // Start up Activity screen and start monitor
+        val activityScenario = ActivityScenario.launch(PicGalleryActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        // THEN - Verify image is displayed on screen
+        onView(withId(R.id.galleryItemIv)).check(matches(customMatcherForDrawable(
+            R.drawable.test_image
+        )))
+
+        onView(withText(R.string.take_photo)).perform(click())
+
+        // Flag for camera set
+        assertThat(cameraViewModel.isCameraVisible.get(), CoreMatchers.`is`(true))
+
+        // Take photo
+        onView(withId(R.id.cameraFragmentTakeShotButton)).perform(click())
+
+        val matcher = withId(R.id.cameraFragmentPreviewLayout)
+        val resource = ViewIdlingResource(matcher, isDisplayed())
+        try {
+            IdlingRegistry.getInstance().register(resource)
+            onView(matcher).check(matches(isDisplayed()))
+
+        } finally {
+            IdlingRegistry.getInstance().unregister(resource)
+        }
+
+        // Rotate image
+        onView(withId(R.id.cameraFragmentRotateButton)).perform(click())
+
+        // Take photo
         onView(withId(R.id.cameraFragmentConfirmButton)).perform(click())
 
         var pics = runBlocking {
             (repository.fetchPictures(0, 30) as Result.Success).data
         }
 
-        // Check if image exist after adding
+        // Check if images exist after adding
         Assert.assertEquals(pics.size, 2)
+        Assert.assertEquals(pics[0].uri, "android.resource://com.example.picgalleryapp/drawable/test_image")
 
-        // Idle
-        val matcher3 = withId(R.id.cameraFragmentPreviewLayout)
+        // Check again idle for R.id.galleryFragRv
+        val matcher3 = withId(R.id.galleryFragRv)
         val resource3 = ViewIdlingResource(matcher3, isDisplayed())
         try {
             IdlingRegistry.getInstance().register(resource3)
             onView(matcher3).check(matches(isDisplayed()))
-
         } finally {
             IdlingRegistry.getInstance().unregister(resource3)
         }
 
         // Click photo
-//        onView(withId(R.id.galleryFragRv)).check(matches(RecyclerViewActions.actionOnItemAtPosition<GalleryImageViewHolder>(0)))
         onView(withId(R.id.galleryFragRv)).perform(RecyclerViewActions.actionOnItemAtPosition<GalleryImageViewHolder>(1, click()))
 
-        // Check again idle for R.id.cameraFragmentPreviewLayout
-        val matcher2 = withId(R.id.cameraFragmentPreviewLayout)
+        // Check again idle for R.id.cameraFragmentRotateButton
+        val matcher2 = withId(R.id.cameraFragmentRotateButton)
         val resource2 = ViewIdlingResource(matcher2, isDisplayed())
         try {
             IdlingRegistry.getInstance().register(resource2)
             onView(matcher2).check(matches(isDisplayed()))
-
         } finally {
             IdlingRegistry.getInstance().unregister(resource2)
         }
@@ -295,6 +314,9 @@ class PicGalleryActivityTest : KoinTest {
             (repository.fetchPictures(0, 30) as Result.Success).data
         }
         Assert.assertEquals(picsAfterDelete.size, 0)
+
+        // Make sure the activity is closed
+        activityScenario.close()
     }
 
 
@@ -324,7 +346,6 @@ class PicGalleryActivityTest : KoinTest {
                 drawable.draw(canvas)
                 return bitmap
             }
-
         }
     }
 }

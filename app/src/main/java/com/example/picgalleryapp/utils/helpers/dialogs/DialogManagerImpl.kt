@@ -39,22 +39,6 @@ class DialogManagerImpl(val activity: FragmentActivity) : DialogManager {
         openOneButtonDialogInternal(buttonTextId, title, message, cancelable, onClickOk)
     }
 
-    override fun openOneButtonDialog(
-        buttonTextId: Int,
-        titleId: Int,
-        messageId: Int,
-        cancelable: Boolean,
-        onClickOk: (() -> Unit)?
-    ) {
-        openOneButtonDialog(
-            buttonTextId,
-            activity.getString(titleId),
-            activity.getString(messageId),
-            cancelable,
-            onClickOk
-        )
-    }
-
     override fun openTwoButtonsDialog(
         titleText: String?,
         messageText: String?,

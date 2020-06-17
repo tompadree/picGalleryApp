@@ -11,8 +11,6 @@ import java.util.concurrent.TimeoutException
 /**
  * @author Tomislav Curis
  */
-
-
 @VisibleForTesting(otherwise = VisibleForTesting.NONE)
 fun <T> LiveData<T>.getOrAwaitValue(
     time: Long = 2,

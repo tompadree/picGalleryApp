@@ -34,7 +34,7 @@ interface PicGalleryDAO {
     fun savePic(picture: ImageUri)
 
     /**
-     * Save image uri.
+     * Fetch uris.
      */
     @Query("SELECT * FROM uris")
     fun fetchUris() : List<ImageUri>

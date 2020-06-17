@@ -50,13 +50,14 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
         }
     }
 
-    fun setupObservers() {
+    private fun setupObservers() {
 
         observeError(viewModel.error)
+        observeErrorRefreshLayout(viewModel.error, galleryFragSwipeLayout)
 
     }
 
-    fun setupRV(){
+    private fun setupRV(){
         galleryAdapter = GalleryAdapter(viewModel)
 
         with(galleryFragRv) {

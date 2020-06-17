@@ -20,8 +20,7 @@ import java.lang.Exception
  */
 class GalleryViewModel(
     private val context: Context,
-    private val repository: PicGalleryRepository,
-    private val dispatchers: CoroutineDispatcher = Dispatchers.IO ) : ViewModel() {
+    private val repository: PicGalleryRepository) : ViewModel() {
 
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
@@ -71,7 +70,7 @@ class GalleryViewModel(
 
     fun handleGalleryPic(imageData: Intent){
 
-        viewModelScope.launch(dispatchers) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val file = Glide.with(context).downloadOnly().load(imageData.data).submit().get()
                 ImageHelper.resizeImage(file, 512)

@@ -23,29 +23,15 @@ import org.koin.android.ext.android.get
 /**
  * @author Tomislav Curis
  */
-abstract class BaseFragment : Fragment(), CoroutineScope {
-
-    protected val TAG = this::class.java.simpleName
+abstract class BaseFragment : Fragment() {
 
     private var dialogManager: DialogManager? = null
-
-    private val fragmentContextJob = Job()
-    override val coroutineContext: CoroutineContext
-        get() = fragmentContextJob + Dispatchers.Main
 
     private val CAMERA_PERMISSION_CODE = 12345
 
     override fun onStop() {
         super.onStop()
         dialogManager?.dismissAll()
-    }
-
-    override fun onDestroy() {
-        try {
-            fragmentContextJob.cancel()
-        } finally {
-            super.onDestroy()
-        }
     }
 
     protected open fun observeError(errorLiveData: LiveData<Throwable>) {
@@ -78,10 +64,6 @@ abstract class BaseFragment : Fragment(), CoroutineScope {
         }
     }
 
-    protected open fun showError(errorTitle: String, errorMessage: String) {
-        getDialogManager().openOneButtonDialog(R.string.ok, errorTitle, errorMessage, true)
-    }
-
     protected open fun showUnknownError() {
         getDialogManager().openOneButtonDialog(R.string.ok, R.string.error_default, true)
     }
@@ -106,7 +88,7 @@ abstract class BaseFragment : Fragment(), CoroutineScope {
         return dialogManager!!
     }
 
-    fun removeDialogs() {
+    private fun removeDialogs() {
         dialogManager?.dismissAll()
     }
 

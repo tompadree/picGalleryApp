@@ -1,11 +1,10 @@
-package com.example.picgalleryapp.camera
+package com.example.picgalleryapp.ui.camera
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.picgalleryapp.data.source.FakeRepository
 import com.example.picgalleryapp.di.AppModule
 import com.example.picgalleryapp.di.DataModule
-import com.example.picgalleryapp.ui.camera.CameraViewModel
 import com.example.picgalleryapp.util.MainCoroutineRule
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CoroutineDispatcher
