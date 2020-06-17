@@ -62,58 +62,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@string/delete_images"
-                        android:onClick="@{() -> viewModel.deleteImages()}"/>
+                        android:onClick="@{() -> viewModel.deleteImages()}"
+                        android:text="@string/delete_images" />
 
                 </LinearLayout>
-
-                <ProgressBar
-                    android:id="@+id/galleryFragProgressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:theme="@style/BlackAcccent"
-                    android:visibility="invisible" />
-
-                <!--                <com.facebook.shimmer.ShimmerFrameLayout-->
-                <!--                    android:id="@+id/shimmerViewContainer"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_below="@+id/galleryFragToolbar"-->
-                <!--                    android:layout_gravity="center"-->
-                <!--                    android:orientation="vertical"-->
-                <!--                    shimmer:duration="300">-->
-                <!--                    &lt;!&ndash;                android:visibility="@{viewModel.empty ? View.VISIBLE : View.GONE}">&ndash;&gt;-->
-
-                <!--                    &lt;!&ndash; Adding 7 rows of placeholders &ndash;&gt;-->
-                <!--                    <LinearLayout-->
-                <!--                        android:layout_width="match_parent"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:orientation="vertical">-->
-
-                <!--                        <include layout="@layout/item_placeholder" />-->
-
-                <!--                        <include layout="@layout/item_placeholder" />-->
-
-                <!--                        <include layout="@layout/item_placeholder" />-->
-
-                <!--                        <include layout="@layout/item_placeholder" />-->
-
-                <!--                        <include layout="@layout/item_placeholder" />-->
-
-                <!--                        <include layout="@layout/item_placeholder" />-->
-
-                <!--                        <include layout="@layout/item_placeholder" />-->
-
-                <!--                        <include layout="@layout/item_placeholder" />-->
-
-                <!--                        <include layout="@layout/item_placeholder" />-->
-
-                <!--                        <include layout="@layout/item_placeholder" />-->
-                <!--                    </LinearLayout>-->
-
-                <!--                </com.facebook.shimmer.ShimmerFrameLayout>-->
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/galleryFragRv"

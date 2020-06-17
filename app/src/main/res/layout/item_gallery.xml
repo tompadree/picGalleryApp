@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
             name="imageUri"
-            type="com.example.picgalleryapp.data.models.ImageUri"/>
+            type="com.example.picgalleryapp.data.models.ImageUri" />
 
         <variable
             name="position"
-            type="Integer"/>
+            type="Integer" />
 
         <variable
             name="viewModel"
@@ -39,8 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:keepScreenOn="true"
-                app:imageSourceGallery="@{imageUri.uri}"
-                android:onClick="@{() -> viewModel.imageClick(position, imageUri.uri)}"/>
+                android:onClick="@{() -> viewModel.imageClick(position, imageUri.uri)}"
+                app:imageSourceGallery="@{imageUri.uri}" />
 
         </RelativeLayout>
 

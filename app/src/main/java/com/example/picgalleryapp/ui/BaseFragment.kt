@@ -27,7 +27,7 @@ abstract class BaseFragment : Fragment() {
 
     private var dialogManager: DialogManager? = null
 
-    private val CAMERA_PERMISSION_CODE = 12345
+    protected val CAMERA_PERMISSION_CODE = 12345
 
     override fun onStop() {
         super.onStop()
@@ -80,6 +80,25 @@ abstract class BaseFragment : Fragment() {
             })
     }
 
+    protected open fun showSecondPermissionDialog() {
+
+        getDialogManager().openTwoButtonsDialog(getString(R.string.camera_permission),
+            getString(R.string.permit_warning_2),
+            getString(R.string.ok),
+            getString(R.string.cancel),
+            onPositiveButtonClick = {
+                val intent = Intent()
+                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                val uri: Uri = Uri.fromParts("package", activity?.packageName, null)
+                intent.data = uri
+                startActivity(intent)
+            },
+            onNegativeButtonClick = {
+                removeDialogs()
+            }
+        )
+    }
+
     private fun getDialogManager(): DialogManager {
         if (dialogManager == null) {
             dialogManager = get { parametersOf(requireContext()) }
@@ -94,33 +113,7 @@ abstract class BaseFragment : Fragment() {
 
 
     // this is called when user closes the permission request dialog
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == CAMERA_PERMISSION_CODE) {
-            if (permissions[0]  == Manifest.permission.CAMERA &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                onResume()
-            }
-            else{
-                getDialogManager().openTwoButtonsDialog(getString(R.string.camera_permission),
-                    getString(R.string.permit_warning_2),
-                    getString(R.string.ok),
-                    getString(R.string.cancel),
-                    onPositiveButtonClick = {
-                        val intent = Intent()
-                        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                        val uri: Uri = Uri.fromParts("package", activity?.packageName, null)
-                        intent.data = uri
-                        startActivity(intent)
-                    },
-                    onNegativeButtonClick = {
-                        removeDialogs()
-                    }
-                )
-            }
-        }
-    }
+
 
     fun permissionGranted() = ContextCompat.checkSelfPermission(
         activity!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED

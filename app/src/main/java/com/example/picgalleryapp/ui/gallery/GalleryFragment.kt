@@ -1,7 +1,9 @@
 package com.example.picgalleryapp.ui.gallery
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.NavHostFragment
@@ -113,6 +115,20 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>() {
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (permissions[0]  == Manifest.permission.CAMERA &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera("")
+            }
+            else{
+                showSecondPermissionDialog()
             }
         }
     }
