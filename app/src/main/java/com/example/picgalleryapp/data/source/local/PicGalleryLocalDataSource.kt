@@ -2,6 +2,7 @@ package com.example.picgalleryapp.data.source.local
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
+import com.example.picgalleryapp.data.models.HepoImage
 import com.example.picgalleryapp.data.models.ImageUri
 import com.example.picgalleryapp.data.source.PicGalleryDataSource
 import kotlinx.coroutines.CoroutineDispatcher
@@ -40,5 +41,9 @@ class PicGalleryLocalDataSource(
     override suspend fun deletePics() =
         withContext(dispatchers) {
             dao.deletePictures()
+    }
+
+    override suspend fun fetchAllPictures(user_id: String): Result<List<HepoImage>> {
+        TODO("Not yet implemented")
     }
 }

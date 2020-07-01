@@ -40,16 +40,18 @@ class GalleryViewModel(
 
     private val _items: LiveData<List<ImageUri>> =
         _page.switchMap { page ->
+            viewModelScope.launch {
+                repository.fetchPictures(true, 0, 50)
+            }
             repository.observePictures(page).map {
                 if (it is Success) {
                     _dataLoading.value = false
                     it.data
-                } else if(it is Result.Error){
+                } else if (it is Result.Error) {
                     _dataLoading.value = false
                     _error.postValue(it.exception)
-                     emptyList()
-                }
-                else
+                    emptyList()
+                } else
                     emptyList()
 
             }

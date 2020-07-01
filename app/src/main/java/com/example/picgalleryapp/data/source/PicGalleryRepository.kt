@@ -13,7 +13,7 @@ interface PicGalleryRepository {
 
     suspend fun savePicture(uri: String)
 
-    suspend fun fetchPictures(page: Int, per_page: Int) : Result<List<ImageUri>>
+    suspend fun fetchPictures(update: Boolean = false, page: Int, per_page: Int) : Result<List<ImageUri>>
 
     suspend fun deletePics()
 }

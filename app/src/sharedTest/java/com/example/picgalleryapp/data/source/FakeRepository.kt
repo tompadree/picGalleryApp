@@ -38,6 +38,7 @@ class FakeRepository : PicGalleryRepository {
     }
 
     override suspend fun fetchPictures(page: Int, per_page: Int): Result<List<ImageUri>> {
+
         if (shouldReturnError) {
             return Result.Error(Exception("Test exception"))
         }
